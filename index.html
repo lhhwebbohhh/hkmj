@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🀄 香港麻雀計番 WebApp V3.1</title>
+    <title>🀄 香港麻雀計番 WebApp V3.2</title>
     <style>
         :root {
             --mahjong-green: #1a5d3a; --mahjong-green-dark: #0f3d24;
@@ -47,8 +47,7 @@
             padding:12px 24px; border:none; border-radius:8px;
             font-size:1rem; font-weight:600; cursor:pointer;
             transition:all 0.3s; box-shadow:0 4px 6px var(--shadow);
-            text-align:center;        /* ← 加呢行 */
-            justify-content:center;   /* ← 加呢行 */
+            text-align:center; justify-content:center;
         }
         .btn:active { transform:translateY(2px); }
         .btn-primary { background:var(--gold); color:var(--mahjong-green-dark); }
@@ -77,13 +76,19 @@
         .radio-option label { display:block; padding:11px; border:2px solid var(--mahjong-green-light); border-radius:8px; text-align:center; cursor:pointer; transition:all 0.3s; background:white; font-size:0.95rem; }
         .radio-option input[type="radio"]:checked + label { background:var(--mahjong-green); color:white; border-color:var(--gold); }
         .radio-option.cheat-option input[type="radio"]:checked + label { background:var(--red); border-color:#b91c1c; }
+        /* 一炮幾響 checkbox 樣式 */
+        .loser-option { flex:1; min-width:110px; }
+        .loser-option input[type="checkbox"] { display:none; }
+        .loser-option label { display:block; padding:11px; border:2px solid var(--mahjong-green-light); border-radius:8px; text-align:center; cursor:pointer; transition:all 0.3s; background:white; font-size:0.95rem; }
+        .loser-option input[type="checkbox"]:checked + label { background:var(--red); color:white; border-color:#b91c1c; box-shadow:0 0 0 3px rgba(220,38,38,0.2); }
+        .multi-loser-info { display:none; margin-top:10px; padding:11px 14px; background:rgba(220,38,38,0.08); border-left:3px solid var(--red); border-radius:6px; font-size:0.88rem; color:#555; }
         .collapsible { background:rgba(42,157,143,0.1); border-radius:8px; margin-top:15px; overflow:hidden; }
         .collapsible-header { padding:14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; color:var(--mahjong-green-dark); }
         .collapsible-header:hover { background:rgba(42,157,143,0.2); }
         .collapsible-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
         .collapsible-content.open { max-height:2000px; padding:15px; }
         .player-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
-        .player-card { background:white; border:3px solid var(--mahjong-green-light); border-radius:12px; padding:18px; text-align:center; position:relative; transition:all 0.3s; }
+        .player-card { background:white; border:3px solid var(--mahjong-green-light); border-radius:12px; padding:18px; text-align:center; position:relative; transition:all 0.3s; color:#333; }
         .player-card.dealer { border-color:var(--gold); background:linear-gradient(135deg,#fff9e6,#fff); box-shadow:0 0 20px rgba(255,215,0,0.4); }
         .player-card.dealer::before {
             content:"莊"; position:absolute; top:-10px; right:-10px;
@@ -141,6 +146,7 @@
         .positive { color:#059669; } .negative { color:var(--red); }
         .history-item { background:white; border-left:4px solid var(--mahjong-green); padding:14px; margin-bottom:11px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
         .history-item.cheat-record { border-left-color:var(--red); }
+        .history-item.multi-win { border-left-color:#f59e0b; }
         .history-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-weight:bold; color:var(--mahjong-green-dark); font-size:0.92rem; }
         .history-details { font-size:0.88rem; color:#555; line-height:1.6; }
         .history-money { margin-top:7px; padding:7px; background:rgba(42,157,143,0.05); border-radius:5px; font-size:0.85rem; }
@@ -153,13 +159,13 @@
         .celebration .money { font-size:1.9rem; color:var(--gold); font-weight:bold; }
         .modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:1500; padding:20px; }
         .modal.active { display:flex; }
-        .modal-content { background:white; border-radius:12px; padding:22px; max-width:650px; max-height:90vh; overflow-y:auto; width:100%; box-shadow:0 20px 60px var(--shadow); }
+        .modal-content { background:white; border-radius:12px; padding:22px; max-width:650px; max-height:90vh; overflow-y:auto; width:100%; box-shadow:0 20px 60px var(--shadow); color:#333; }
         .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:13px; border-bottom:2px solid var(--gold); }
         .modal-header h3 { color:var(--mahjong-green); font-size:1.2rem; }
         .modal-close { background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999; }
         .modal-close:hover { color:var(--red); }
-        .settlement-item { display:flex; align-items:center; justify-content:space-between; padding:11px 14px; background:rgba(42,157,143,0.05); border-radius:8px; margin-bottom:8px; font-size:0.97rem; }
-        .settlement-item.completed { opacity:0.5; text-decoration:line-through; }
+        .settlement-item { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; background:rgba(42,157,143,0.08); border-radius:8px; margin-bottom:8px; font-size:0.97rem; color:#333; border:1px solid rgba(42,157,143,0.2); }
+        .settlement-item.completed { opacity:0.45; text-decoration:line-through; }
         .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px; margin-bottom:18px; }
         .stat-card { background:linear-gradient(135deg,var(--mahjong-green-light),var(--mahjong-green)); color:white; padding:14px; border-radius:12px; text-align:center; box-shadow:0 4px 12px var(--shadow); }
         .stat-card-icon { font-size:1.7rem; margin-bottom:7px; }
@@ -172,7 +178,7 @@
         .emoji-btn { font-size:1.5rem; padding:5px; border:2px solid transparent; border-radius:7px; cursor:pointer; background:rgba(42,157,143,0.05); text-align:center; transition:all 0.2s; }
         .emoji-btn:hover { background:rgba(42,157,143,0.15); border-color:var(--mahjong-green-light); }
         .emoji-btn.selected { border-color:var(--gold); background:rgba(255,215,0,0.2); }
-        .saved-game-card { background:white; border-radius:12px; padding:16px; margin-bottom:11px; box-shadow:0 2px 8px rgba(0,0,0,0.08); cursor:pointer; border-left:4px solid var(--mahjong-green); transition:all 0.2s; }
+        .saved-game-card { background:white; border-radius:12px; padding:16px; margin-bottom:11px; box-shadow:0 2px 8px rgba(0,0,0,0.08); cursor:pointer; border-left:4px solid var(--mahjong-green); transition:all 0.2s; color:#333; }
         .saved-game-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,0.14); }
         .saved-game-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-weight:bold; color:var(--mahjong-green-dark); }
         .saved-game-players { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; margin-top:7px; }
@@ -187,7 +193,7 @@
         @media(max-width:768px){
             .header h1{font-size:1.5rem;}
             .player-grid{grid-template-columns:repeat(2,1fr);}
-            .btn-group{flex-direction:column;}
+            .btn-group{flex-direction:column; align-items:stretch;}
             .radio-group{flex-direction:column;}
             .table{font-size:0.8rem;}
             .table th,.table td{padding:6px 3px;}
@@ -201,7 +207,7 @@
 <div class="container">
     <div class="header">
         <h1>🀄 香港麻雀計番 WebApp</h1>
-        <p class="subtitle">全功能牌局管理系統 V3.1 ⏱️</p>
+        <p class="subtitle">全功能牌局管理系統 V3.2 ⏱️🔥</p>
     </div>
 
     <!-- 設定頁面 -->
@@ -238,8 +244,9 @@
                 <div class="collapsible-content">
                     <p style="margin-bottom:8px;color:#555;"><strong>辣辣上：</strong>每番翻倍。</p>
                     <p style="margin-bottom:8px;color:#555;"><strong>半辣上：</strong>4番後隔番×1.5上升。</p>
+                    <p style="margin-bottom:8px;color:#555;"><strong>一炮幾響：</strong>出銃時可選多位食糊者，各自收台價。</p>
                     <p style="margin-bottom:8px;color:#555;"><strong>詐糊：</strong>詐糊者賠三家各上限番數台價。</p>
-                    <p style="color:#555;"><strong>全銃制：</strong>自摸三家各付台價；出銃者付台價；包牌者獨自賠×3。</p>
+                    <p style="color:#555;"><strong>包牌：</strong>包牌者獨自賠台價×3。</p>
                 </div>
             </div>
         </div>
@@ -281,7 +288,12 @@
                     <div class="radio-option cheat-option"><input type="radio" id="cheatWin" name="winMethod" value="cheat" onchange="updateWinMethod()"><label for="cheatWin">詐糊 ❌</label></div>
                 </div>
             </div>
-            <div class="form-group" id="loserSelectGroup" style="display:none;"><label>出銃者</label><div class="radio-group" id="loserSelect"></div></div>
+            <!-- 出銃者（支援一炮幾響多選） -->
+            <div class="form-group" id="loserSelectGroup" style="display:none;">
+                <label>出銃者 <small style="color:#999;font-weight:normal;">（可多選 = 一炮幾響🔥）</small></label>
+                <div id="loserSelect" style="display:flex;gap:10px;flex-wrap:wrap;"></div>
+                <div class="multi-loser-info" id="multiLoserInfo"></div>
+            </div>
             <div class="form-group" id="baoPaiSelectGroup" style="display:none;">
                 <label>包牌者</label>
                 <div class="toggle-section"><span><strong>有包牌</strong><br><small>包牌者獨自賠全部</small></span><label class="toggle"><input type="checkbox" id="hasBaoPai" onchange="updateBaoPai()"><span class="toggle-slider"></span></label></div>
@@ -320,7 +332,7 @@
         </div>
     </div>
 
-    <!-- 番數表頁面 -->
+    <!-- 番數表 -->
     <div id="fanTablePage" class="page">
         <div class="card">
             <h2>📋 番數對照表</h2>
@@ -331,9 +343,8 @@
                     <tr><td></td><td>自摸</td><td>自己摸牌食糊</td></tr>
                     <tr><td></td><td>門前清</td><td>冇上碰槓，自摸</td></tr>
                     <tr><td></td><td>正花</td><td>門風或圈風花牌</td></tr>
-                    <tr><td></td><td>門風刻</td><td>三隻門風刻子（例如：東位碰東）</td></tr>
-                    <tr><td></td><td>圈風刻</td><td>三隻圈風刻子（例如：東圈碰東）</td></tr>
-                    <tr><td></td><td>紅中發財白板刻</td><td>三隻中/發/白刻子</td></tr>
+                    <tr><td></td><td>門風刻</td><td>三隻門風刻子</td></tr>
+                    <tr><td></td><td>圈風刻</td><td>三隻圈風刻子</td></tr>
                     <tr><td class="table-center"><strong>2番</strong></td><td>一台花</td><td>摸齊春夏秋冬或梅蘭菊竹</td></tr>
                     <tr><td class="table-center"><strong>3番</strong></td><td>對對糊</td><td>四組刻子</td></tr>
                     <tr><td></td><td>混一色</td><td>單一花色+字牌</td></tr>
@@ -345,7 +356,6 @@
                     <tr><td class="table-center"><strong>10番</strong></td><td>大三元</td><td>中發白三組刻子</td></tr>
                     <tr><td></td><td>大四喜</td><td>東南西北四組刻子</td></tr>
                     <tr><td class="table-center"><strong>13番</strong></td><td>十三么</td><td>19萬19筒19索7字各一</td></tr>
-                    <tr><td></td><td>人糊</td><td>閒家在開局後第一輪內胡別家出的</td></tr>
                     <tr><td></td><td>天糊</td><td>莊家起手食糊</td></tr>
                     <tr><td></td><td>地糊</td><td>莊家出第一隻即食糊</td></tr>
                 </tbody>
@@ -357,6 +367,7 @@
                 <ul style="margin:0 0 0 18px;color:#555;font-size:0.95rem;">
                     <li><strong>自摸：</strong>三家各付台價</li>
                     <li><strong>出銃：</strong>出銃者付台價</li>
+                    <li><strong>一炮幾響：</strong>每位食糊者各收一份台價，出銃者賠全部</li>
                     <li><strong>包牌：</strong>包牌者賠台價×3</li>
                     <li><strong>詐糊：</strong>賠三家各上限番台價</li>
                 </ul>
@@ -392,7 +403,7 @@
         </div>
     </div>
 
-    <!-- 統計頁面 -->
+    <!-- 統計 -->
     <div id="statsPage" class="page">
         <div class="card">
             <h2>📊 統計數據</h2>
@@ -456,6 +467,7 @@
     <div class="modal-content">
         <div class="modal-header"><h3>💸 找數方案</h3><button class="modal-close" onclick="closeSettlement()">✕</button></div>
         <div id="settlementContent"></div>
+        <button class="btn btn-primary btn-full" style="margin-top:15px;" onclick="closeSettlement()">完成，開新局 🎮</button>
     </div>
 </div>
 
@@ -475,7 +487,6 @@ const MAX_SAVED_GAMES=15;
 const CHART_COLORS=['#1a5d3a','#dc2626','#2563eb','#d97706'];
 const fanTypes=[
     {name:'平糊',value:1},{name:'自摸',value:1},{name:'門前清',value:1},
-    {name:'紅中',value:1},{name:'發財',value:1},{name:'白板',value:1},
     {name:'正花',value:1},{name:'門風刻',value:1},{name:'圈風刻',value:1},
     {name:'搶槓糊',value:1},{name:'槓上自摸',value:1},{name:'海底撈月',value:1},
     {name:'一台花',value:2},{name:'對對糊',value:3},{name:'混一色',value:3},
@@ -497,7 +508,7 @@ let gameState={
 let playerProfiles=[];
 
 // ═══════════════════════════════════════════
-// ⏱️ 計時器（時間戳記法，鎖屏都準確）
+// ⏱️ 計時器
 // ═══════════════════════════════════════════
 let timerStartTimestamp=null;
 let timerAccumulated=0;
@@ -523,6 +534,15 @@ function stopTimer(){
     if(el)el.classList.remove('running');
 }
 
+function resetTimer(){
+    clearInterval(timerInterval);
+    timerStartTimestamp=null;
+    timerAccumulated=0;
+    timerRunning=false;
+    const el=document.getElementById('gameTimer');
+    if(el){el.textContent='00:00:00';el.classList.remove('running');}
+}
+
 function getElapsedSeconds(){
     if(!timerStartTimestamp)return timerAccumulated;
     return timerAccumulated+Math.floor((Date.now()-timerStartTimestamp)/1000);
@@ -546,7 +566,6 @@ function formatDuration(seconds){
     return `${s}秒`;
 }
 
-// 返回前台立即更新
 document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible'&&timerRunning)updateTimerDisplay();
 });
@@ -561,7 +580,6 @@ function init(){
     if(saved){
         if(confirm('發現未完成的牌局，是否繼續？')){
             gameState=JSON.parse(saved);
-            // 恢復計時器
             if(gameState.timerAccumulated!==undefined){
                 timerAccumulated=gameState.timerAccumulated;
                 timerStartTimestamp=Date.now();
@@ -608,8 +626,7 @@ function renderPlayerSetup(){
                 <input type="text" id="player${i}" value="${profile.name}" placeholder="玩家名稱"
                     oninput="playerProfiles[${i}].name=this.value;saveProfiles();">
             </div>
-            <div class="emoji-grid" id="emojiGrid${i}"></div>
-        `;
+            <div class="emoji-grid" id="emojiGrid${i}"></div>`;
         container.appendChild(div);
         renderEmojiGrid(i,profile.emoji);
     });
@@ -695,8 +712,7 @@ function updateGameDisplay(){
             <div class="player-emoji">${player.emoji||'😀'}</div>
             <div class="player-position">${player.position}家</div>
             <div class="player-name">${player.name}</div>
-            <div class="player-score ${sc}">${player.score>=0?'+':''}$${player.score}</div>
-        `;
+            <div class="player-score ${sc}">${player.score>=0?'+':''}$${player.score}</div>`;
         grid.appendChild(card);
     });
 }
@@ -738,8 +754,7 @@ function showRecordWin(){
         o.innerHTML=`
             <input type="radio" id="winner${index}" name="winner" value="${index}"
                 ${index===0?'checked':''} onchange="updateLoserSelect();updateCheatInfo();">
-            <label for="winner${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>
-        `;
+            <label for="winner${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>`;
         ws.appendChild(o);
     });
     document.getElementById('selfDraw').checked=true;
@@ -753,6 +768,7 @@ function showRecordWin(){
     document.getElementById('fanSelectMode').style.display='block';
     document.getElementById('fanDirectMode').style.display='none';
     document.getElementById('directFanInput').value=gameState.settings.minFan;
+    document.getElementById('multiLoserInfo').style.display='none';
     updateLoserSelect();buildFanGroups();updateTotalFan();updateCheatInfo();
 }
 
@@ -828,24 +844,48 @@ function updateWinMethod(){
     }
 }
 
+// ═══════════════════════════════════════════
+// 一炮幾響：出銃者改為 checkbox 多選
+// ═══════════════════════════════════════════
 function updateLoserSelect(){
     const ls=document.getElementById('loserSelect');
     ls.innerHTML='';
     const wr=document.querySelector('input[name="winner"]:checked');
     if(!wr)return;
     const wi=parseInt(wr.value);
-    let first=true;
     gameState.players.forEach((player,index)=>{
         if(index!==wi){
             const o=document.createElement('div');
-            o.className='radio-option';
+            o.className='loser-option';
             o.innerHTML=`
-                <input type="radio" id="loser${index}" name="loser" value="${index}" ${first?'checked':''}>
-                <label for="loser${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>`;
-            ls.appendChild(o);first=false;
+                <input type="checkbox" id="loser${index}" name="loser" value="${index}"
+                    onchange="updateMultiLoserInfo()">
+                <label for="loser${index}">
+                    ${player.emoji||''} ${player.name}<br>
+                    <small>${player.position}家</small>
+                </label>`;
+            ls.appendChild(o);
         }
     });
+    document.getElementById('multiLoserInfo').style.display='none';
     updateBaoPaiSelect();
+}
+
+function updateMultiLoserInfo(){
+    const checked=[...document.querySelectorAll('input[name="loser"]:checked')];
+    const info=document.getElementById('multiLoserInfo');
+    if(checked.length>1){
+        const baseMoney=calculateMoney(Math.min(
+            parseInt(document.getElementById('directFanInput')?.value)||gameState.settings.minFan,
+            gameState.settings.maxFan
+        ));
+        info.style.display='block';
+        info.innerHTML=`🔥 <strong>一炮幾響！</strong> ${checked.length} 位出銃<br>
+            出銃者共賠：<strong style="color:#dc2626;">$${baseMoney*checked.length}</strong>（每份 $${baseMoney}）`;
+    } else {
+        info.style.display='none';
+    }
+    updateTotalFan();
 }
 
 function updateBaoPai(){
@@ -899,12 +939,25 @@ function updateTotalFan(){
         });
     }
     const actual=Math.min(totalFan,gameState.settings.maxFan);
+    const baseMoney=calculateMoney(actual);
+    // 一炮幾響：顯示總賠額
+    const loserChecked=[...document.querySelectorAll('input[name="loser"]:checked')];
+    const method=document.querySelector('input[name="winMethod"]:checked')?.value||'self';
+    const totalWin=method==='other'&&loserChecked.length>1?baseMoney*loserChecked.length:baseMoney;
     document.getElementById('totalFanDisplay').textContent=`${totalFan} 番`;
-    document.getElementById('totalMoneyDisplay').textContent=`台價 $${calculateMoney(actual)}`;
+    document.getElementById('totalMoneyDisplay').textContent=
+        method==='other'&&loserChecked.length>1
+        ?`食糊共收 $${totalWin}（${loserChecked.length}×$${baseMoney}）`
+        :`台價 $${baseMoney}`;
     const cap=document.getElementById('capMessage');
     if(totalFan>gameState.settings.maxFan){cap.textContent=`已爆棚！計 ${gameState.settings.maxFan} 番`;cap.style.color='#dc2626';}
     else if(totalFan>0&&totalFan<gameState.settings.minFan){cap.textContent=`未達起糊番數（需 ${gameState.settings.minFan} 番）`;cap.style.color='#dc2626';}
     else cap.textContent='';
+    // 同步更新一炮幾響提示
+    if(loserChecked.length>1){
+        const info=document.getElementById('multiLoserInfo');
+        if(info)info.innerHTML=`🔥 <strong>一炮幾響！</strong> ${loserChecked.length} 位出銃<br>出銃者共賠：<strong style="color:#dc2626;">$${baseMoney*loserChecked.length}</strong>（每份 $${baseMoney}）`;
+    }
 }
 
 function calculateMoney(fan){
@@ -917,15 +970,17 @@ function calculateMoney(fan){
 }
 
 // ═══════════════════════════════════════════
-// 確認食糊
+// 確認食糊（支援一炮幾響）
 // ═══════════════════════════════════════════
 function confirmWin(){
     const wi=parseInt(document.querySelector('input[name="winner"]:checked').value);
     const method=document.querySelector('input[name="winMethod"]:checked').value;
+
+    // 詐糊
     if(method==='cheat'){
         const cm=calculateMoney(gameState.settings.maxFan);
-        const sc={};gameState.players.forEach((p,i)=>sc[i]=0);
-        gameState.players.forEach((p,i)=>{if(i!==wi){sc[i]=cm;sc[wi]-=cm;}});
+        const sc={};gameState.players.forEach((_,i)=>sc[i]=0);
+        gameState.players.forEach((_,i)=>{if(i!==wi){sc[i]=cm;sc[wi]-=cm;}});
         Object.keys(sc).forEach(i=>{gameState.players[i].score+=sc[i];});
         gameState.players[wi].cheats=(gameState.players[wi].cheats||0)+1;
         gameState.history.push({
@@ -937,6 +992,8 @@ function confirmWin(){
         gameState.currentDealer=(gameState.currentDealer+1)%4;gameState.consecutiveDealer=0;
         gameState.roundNumber++;updateGameDisplay();updateUndoBtn();saveGame();showPage('gamePage');return;
     }
+
+    // 番數
     const fanMode=document.querySelector('input[name="fanMode"]:checked')?.value||'select';
     let totalFan=0;const selectedFans=[];
     if(fanMode==='direct'){
@@ -951,29 +1008,41 @@ function confirmWin(){
     if(totalFan<gameState.settings.minFan){alert(`未達起糊番數！需要至少 ${gameState.settings.minFan} 番。`);return;}
     const actualFan=Math.min(totalFan,gameState.settings.maxFan);
     const baseMoney=calculateMoney(actualFan);
-    const sc={};gameState.players.forEach((p,i)=>sc[i]=0);
+    const sc={};gameState.players.forEach((_,i)=>sc[i]=0);
     const hasBaoPai=gameState.settings.baoPai&&document.getElementById('hasBaoPai').checked;
-    let baoPaiPerson=-1,loserIndex=-1;
+    let baoPaiPerson=-1;
+    let loserIndexes=[];
+
     if(method==='self'){
         if(hasBaoPai){
             baoPaiPerson=parseInt(document.querySelector('input[name="baoPaiPerson"]:checked').value);
             sc[baoPaiPerson]=-(baseMoney*3);sc[wi]=baseMoney*3;
         } else {
-            gameState.players.forEach((p,i)=>{if(i!==wi){sc[i]=-baseMoney;sc[wi]+=baseMoney;}});
+            gameState.players.forEach((_,i)=>{if(i!==wi){sc[i]=-baseMoney;sc[wi]+=baseMoney;}});
         }
     } else {
-        loserIndex=parseInt(document.querySelector('input[name="loser"]:checked').value);
-        sc[loserIndex]=-baseMoney;sc[wi]=baseMoney;gameState.players[loserIndex].losses++;
+        // 一炮幾響：支援多個出銃者
+        const loserChecked=[...document.querySelectorAll('input[name="loser"]:checked')];
+        if(loserChecked.length===0){alert('請選擇出銃者！');return;}
+        loserIndexes=loserChecked.map(cb=>parseInt(cb.value));
+        loserIndexes.forEach(li=>{
+            sc[li]-=baseMoney;
+            sc[wi]+=baseMoney;
+            gameState.players[li].losses++;
+        });
     }
+
     Object.keys(sc).forEach(i=>{gameState.players[i].score+=sc[i];});
     gameState.players[wi].wins++;
     if(method==='self')gameState.players[wi].selfDraws++;
     gameState.players[wi].totalFan+=totalFan;
+
+    const isMulti=loserIndexes.length>1;
     gameState.history.push({
         round:gameState.roundNumber,roundName:document.getElementById('currentRound').textContent,
-        winner:wi,loser:loserIndex,method,fans:selectedFans,totalFan,actualFan,baseMoney,
+        winner:wi,loser:loserIndexes,method,fans:selectedFans,totalFan,actualFan,baseMoney,
         money:sc[wi],scoreChanges:sc,timestamp:new Date().toLocaleTimeString('zh-HK'),
-        baoPai:hasBaoPai,baoPaiPerson,fanMode
+        baoPai:hasBaoPai,baoPaiPerson,fanMode,isMultiLoser:isMulti
     });
     updateGameStats();
     if(actualFan>=10)showCelebration(gameState.players[wi].name,selectedFans.join('、'),sc[wi]);
@@ -1008,7 +1077,9 @@ function undoLastRecord(){
     } else if(last.winner!==-1){
         gameState.players[last.winner].wins=Math.max(0,gameState.players[last.winner].wins-1);
         if(last.method==='self')gameState.players[last.winner].selfDraws=Math.max(0,gameState.players[last.winner].selfDraws-1);
-        if(last.loser!==-1)gameState.players[last.loser].losses=Math.max(0,gameState.players[last.loser].losses-1);
+        if(Array.isArray(last.loser)){
+            last.loser.forEach(li=>{ gameState.players[li].losses=Math.max(0,gameState.players[li].losses-1); });
+        }
         gameState.players[last.winner].totalFan=Math.max(0,gameState.players[last.winner].totalFan-(last.totalFan||0));
     }
     gameState.history.pop();
@@ -1121,7 +1192,9 @@ function updateHistory(){
             item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）</span><span>${record.timestamp}</span></div><div class="history-details"><strong style="color:#dc2626;">❌ ${cheater.emoji||''} ${cheater.name} 詐糊！</strong><div>罰款：每家 $${cm}，共賠 <strong>$${-record.money}</strong></div></div>${md}`;
         } else {
             const winner=gameState.players[record.winner];
-            const mt=record.method==='self'?'自摸':'出銃';
+            const isMulti=record.isMultiLoser&&Array.isArray(record.loser)&&record.loser.length>1;
+            if(isMulti)item.classList.add('multi-win');
+            const mt=record.method==='self'?'自摸':isMulti?`一炮幾響🔥 (${record.loser.length}人出銃)`:'出銃';
             const fi=record.actualFan>=10?' 🌟':'';
             let md='<div class="history-money">';
             Object.keys(record.scoreChanges).forEach(i=>{
@@ -1131,10 +1204,14 @@ function updateHistory(){
             md+='</div>';
             let bp='';
             if(record.baoPai&&record.baoPaiPerson!==-1)bp=`<div style="color:#f59e0b;margin-top:4px;">⚠️ ${gameState.players[record.baoPaiPerson].emoji||''} ${gameState.players[record.baoPaiPerson].name} 包牌</div>`;
+            let loserNames='';
+            if(isMulti){
+                loserNames=`<div style="color:#dc2626;margin-top:3px;">💥 出銃：${record.loser.map(li=>gameState.players[li].name).join('、')}</div>`;
+            }
             const fl=record.totalFan!==record.actualFan
-                ?`${record.totalFan}番 <span style="color:#dc2626;">⚠️ 爆棚！上限${record.actualFan}番</span> = $${record.money}`
+                ?`${record.totalFan}番 <span style="color:#dc2626;">⚠️ 爆棚${record.actualFan}番</span> = $${record.money}`
                 :`${record.totalFan}番 = $${record.money}`;
-            item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）${fi}</span><span>${record.timestamp}</span></div><div class="history-details"><div><strong>🎯 ${winner.emoji||''} ${winner.name}</strong>（${mt}）</div><div>📝 ${record.fans.join('、')}</div><div>💰 ${fl}</div>${bp}</div>${md}`;
+            item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）${fi}</span><span>${record.timestamp}</span></div><div class="history-details"><div><strong>🎯 ${winner.emoji||''} ${winner.name}</strong>（${mt}）</div><div>📝 ${record.fans.join('、')}</div><div>💰 ${fl}</div>${loserNames}${bp}</div>${md}`;
         }
         list.appendChild(item);
     });
@@ -1166,17 +1243,29 @@ function showSettlement(){
     if(elapsed>0){
         html+=`<div class="duration-badge">⏱️ 本局歷時：<strong>${formatDuration(elapsed)}</strong></div><br>`;
     }
-    html+='<h3 style="color:var(--mahjong-green);margin-bottom:11px;">最終戰績</h3>';
+    html+='<h3 style="color:var(--mahjong-green);margin-bottom:11px;">🏆 最終戰績</h3>';
     html+='<table class="table" style="margin-bottom:18px;"><thead><tr><th>玩家</th><th class="table-center">金額</th></tr></thead><tbody>';
     gameState.players.forEach(p=>{
-        const sc=p.score>0?'positive':p.score<0?'negative':'';
-        html+=`<tr><td>${p.emoji||''} ${p.name}</td><td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td></tr>`;
+        const sc=p.score>0?'#059669':p.score<0?'#dc2626':'#333';
+        html+=`<tr><td style="color:#333;">${p.emoji||''} ${p.name}</td><td class="table-center"><strong style="color:${sc};">${p.score>=0?'+':''}$${p.score}</strong></td></tr>`;
     });
     html+='</tbody></table>';
     const settles=calcSettlement(gameState.players.map(p=>({name:(p.emoji||'')+' '+p.name,score:p.score})));
     html+='<h3 style="color:var(--mahjong-green);margin-bottom:11px;">💸 找數方案</h3>';
-    if(settles.length===0){html+='<p style="text-align:center;color:#999;">大家打和，無需找數 🎉</p>';}
-    else{settles.forEach((s,i)=>{html+=`<div class="settlement-item" id="settle${i}"><span>${i+1}. ${s.from} 俾 <strong>$${s.amount}</strong> 俾 ${s.to}</span><input type="checkbox" style="width:22px;height:22px;" onchange="toggleSettled(${i})"></div>`;});}
+    if(settles.length===0){
+        html+='<p style="text-align:center;color:#059669;font-weight:bold;padding:15px;">🎉 大家打和，無需找數！</p>';
+    } else {
+        settles.forEach((s,i)=>{
+            html+=`<div class="settlement-item" id="settle${i}">
+                <span style="color:#333;font-size:0.95rem;">
+                    ${i+1}. <strong style="color:#333;">${s.from}</strong>
+                    俾 <strong style="color:#dc2626;font-size:1.1rem;">$${s.amount}</strong>
+                    俾 <strong style="color:#059669;">${s.to}</strong>
+                </span>
+                <input type="checkbox" style="width:24px;height:24px;cursor:pointer;accent-color:#1a5d3a;" onchange="toggleSettled(${i})">
+            </div>`;
+        });
+    }
     content.innerHTML=html;
     document.getElementById('settlementModal').classList.add('active');
 }
@@ -1194,11 +1283,24 @@ function calcSettlement(players){
     }
     return res;
 }
+
 function toggleSettled(idx){document.getElementById(`settle${idx}`).classList.toggle('completed');}
-function closeSettlement(){document.getElementById('settlementModal').classList.remove('active');}
+
+// ✅ 關閉找數 → 自動 Reset + 返設定頁
+function closeSettlement(){
+    document.getElementById('settlementModal').classList.remove('active');
+    const savedSettings={...gameState.settings};
+    gameState={
+        settings:savedSettings,
+        players:[],currentDealer:0,roundNumber:1,consecutiveDealer:0,
+        history:[],stats:{},maxConsecutive:0,maxConsecutivePlayer:'',startTime:null
+    };
+    resetTimer();
+    showPage('setupPage');
+}
 
 // ═══════════════════════════════════════════
-// 歷史牌局儲存
+// 歷史牌局
 // ═══════════════════════════════════════════
 function saveCompletedGame(){
     const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
@@ -1218,9 +1320,6 @@ function saveCompletedGame(){
     localStorage.setItem('mahjongHistory',JSON.stringify(games));
 }
 
-// ═══════════════════════════════════════════
-// 渲染歷史牌局列表
-// ═══════════════════════════════════════════
 function renderSavedGames(){
     const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
     const container=document.getElementById('savedGamesList');
@@ -1235,16 +1334,14 @@ function renderSavedGames(){
         card.className='saved-game-card';
         card.innerHTML=`
             <div class="saved-game-header">
-                <div>
-                    <span style="font-size:0.95rem;">📅 ${game.date} ${game.endTime||''}</span>
-                </div>
+                <span style="font-size:0.95rem;color:var(--mahjong-green-dark);">📅 ${game.date} ${game.endTime||''}</span>
                 <button class="delete-game-btn" onclick="deleteSavedGame(${index},event)">🗑️</button>
             </div>
             <div style="font-size:0.85rem;color:#666;margin-bottom:6px;">
                 ${spicyLabel} · ${baseLabel} · ${game.totalRounds}局
                 ${game.durationText?` · ⏱️ ${game.durationText}`:''}
             </div>
-            <div style="font-size:0.88rem;color:#888;margin-bottom:6px;">
+            <div style="font-size:0.88rem;color:#555;margin-bottom:6px;">
                 🏆 ${winner.emoji||''} ${winner.name} 勝出（${winner.score>=0?'+':''}$${winner.score}）
                 ${game.maxConsecutive>0?` · 👑 最長連莊 ${game.maxConsecutive} 次`:''}
             </div>
@@ -1268,9 +1365,6 @@ function deleteSavedGame(index,event){
     renderSavedGames();
 }
 
-// ═══════════════════════════════════════════
-// 歷史牌局詳情 + 折線圖
-// ═══════════════════════════════════════════
 function openSavedGame(index){
     const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
     const game=games[index];
@@ -1278,26 +1372,22 @@ function openSavedGame(index){
     const spicyLabel=game.settings.spicyLevel==='full'?'🔥🔥辣辣上':'🌶️半辣上';
     const baseLabel=['','二五雞($1)','五一($2)','','一二蚊($4)'][game.settings.baseRate]||'';
     let html='';
-    // 遊戲時間
     if(game.duration&&game.duration>0){
-        html+=`<div class="duration-badge" style="margin-bottom:14px;">⏱️ 遊戲時間：<strong>${game.durationText}</strong></div><br>`;
+        html+=`<div class="duration-badge">⏱️ 遊戲時間：<strong>${game.durationText}</strong></div><br>`;
     }
-    // 設定
     html+=`<div style="background:rgba(42,157,143,0.08);padding:11px 14px;border-radius:8px;margin-bottom:14px;font-size:0.88rem;color:#555;">
         ${spicyLabel} · ${baseLabel} · 起糊${game.settings.minFan}番 · 爆棚${game.settings.maxFan}番 · 共${game.totalRounds}局
         ${game.maxConsecutive>0?` · 👑 最長連莊 ${game.maxConsecutive} 次（${game.maxConsecutivePlayer}）`:''}
     </div>`;
-    // 戰績表
     const sorted=[...game.players].sort((a,b)=>b.score-a.score);
     html+='<h4 style="color:var(--mahjong-green);margin-bottom:9px;">🏆 最終戰績</h4>';
     html+='<table class="table" style="margin-bottom:16px;"><thead><tr><th>排名</th><th>玩家</th><th class="table-center">金額</th><th class="table-center">食糊</th><th class="table-center">自摸</th><th class="table-center">出銃</th></tr></thead><tbody>';
     const medals=['🥇','🥈','🥉','4️⃣'];
     sorted.forEach((p,i)=>{
-        const sc=p.score>0?'positive':p.score<0?'negative':'';
-        html+=`<tr><td>${medals[i]}</td><td>${p.emoji||''} ${p.name}</td><td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td><td class="table-center">${p.wins}</td><td class="table-center">${p.selfDraws}</td><td class="table-center">${p.losses}</td></tr>`;
+        const sc=p.score>0?'#059669':p.score<0?'#dc2626':'#333';
+        html+=`<tr><td>${medals[i]}</td><td style="color:#333;">${p.emoji||''} ${p.name}</td><td class="table-center"><strong style="color:${sc};">${p.score>=0?'+':''}$${p.score}</strong></td><td class="table-center">${p.wins}</td><td class="table-center">${p.selfDraws}</td><td class="table-center">${p.losses}</td></tr>`;
     });
     html+='</tbody></table>';
-    // 折線圖
     html+=`<h4 style="color:var(--mahjong-green);margin-bottom:9px;">📈 金額走勢</h4>
     <div class="chart-container">
         <div class="chart-legend" id="chartLegend_${index}"></div>
@@ -1315,18 +1405,14 @@ function drawScoreChart(game,index){
     const dpr=window.devicePixelRatio||1;
     const W=canvas.parentElement.clientWidth-30;
     const H=220;
-    canvas.width=W*dpr; canvas.height=H*dpr;
-    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    canvas.style.width=W+'px';canvas.style.height=H+'px';
     ctx.scale(dpr,dpr);
-    // 計算各局累計分數
     const scores=game.players.map(()=>[0]);
     const cumulative=game.players.map(()=>0);
     game.history.forEach(h=>{
         if(h.scoreChanges){
-            game.players.forEach((_,i)=>{
-                cumulative[i]+=(h.scoreChanges[i]||0);
-                scores[i].push(cumulative[i]);
-            });
+            game.players.forEach((_,i)=>{cumulative[i]+=(h.scoreChanges[i]||0);scores[i].push(cumulative[i]);});
         } else {
             game.players.forEach((_,i)=>scores[i].push(cumulative[i]));
         }
@@ -1335,59 +1421,41 @@ function drawScoreChart(game,index){
     const minVal=Math.min(...allVals);
     const maxVal=Math.max(...allVals);
     const range=Math.max(maxVal-minVal,1);
-    const PAD={top:20,right:15,bottom:35,left:50};
+    const PAD={top:20,right:15,bottom:35,left:55};
     const CW=W-PAD.left-PAD.right;
     const CH=H-PAD.top-PAD.bottom;
     const xStep=scores[0].length>1?CW/(scores[0].length-1):CW;
     function toX(i){return PAD.left+(scores[0].length>1?i*xStep:CW/2);}
     function toY(v){return PAD.top+CH-(((v-minVal)/range)*CH);}
-    // 背景
     ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
-    // 格線
     ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;
-    const gridLines=5;
-    for(let g=0;g<=gridLines;g++){
-        const y=PAD.top+(g/gridLines)*CH;
+    for(let g=0;g<=5;g++){
+        const y=PAD.top+(g/5)*CH;
         ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(W-PAD.right,y);ctx.stroke();
-        const val=maxVal-((maxVal-minVal)*g/gridLines);
-        ctx.fillStyle='#9ca3af';ctx.font=`${11*dpr/dpr}px sans-serif`;ctx.textAlign='right';
-        ctx.fillText(`$${Math.round(val)}`,PAD.left-5,y+4);
+        const val=maxVal-((maxVal-minVal)*g/5);
+        ctx.fillStyle='#9ca3af';ctx.font='11px sans-serif';ctx.textAlign='right';
+        ctx.fillText(`$${Math.round(val)}`,PAD.left-4,y+4);
     }
-    // 零線
     if(minVal<0&&maxVal>0){
         const zy=toY(0);
-        ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+        ctx.strokeStyle='rgba(0,0,0,0.15)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
         ctx.beginPath();ctx.moveTo(PAD.left,zy);ctx.lineTo(W-PAD.right,zy);ctx.stroke();
         ctx.setLineDash([]);
     }
-    // X軸標籤
     ctx.fillStyle='#9ca3af';ctx.font='10px sans-serif';ctx.textAlign='center';
     const step=Math.max(1,Math.floor(scores[0].length/8));
-    scores[0].forEach((_,i)=>{
-        if(i%step===0||i===scores[0].length-1){
-            ctx.fillText(i,toX(i),H-PAD.bottom+15);
-        }
-    });
-    ctx.fillStyle='#555';ctx.font='11px sans-serif';
-    ctx.fillText('局數',W/2,H-2);
-    // 折線
+    scores[0].forEach((_,i)=>{if(i%step===0||i===scores[0].length-1)ctx.fillText(i,toX(i),H-PAD.bottom+15);});
+    ctx.fillStyle='#555';ctx.font='11px sans-serif';ctx.fillText('局數',W/2,H-2);
     game.players.forEach((p,pi)=>{
         const color=CHART_COLORS[pi];
         ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
         ctx.beginPath();
-        scores[pi].forEach((v,i)=>{
-            if(i===0)ctx.moveTo(toX(i),toY(v));
-            else ctx.lineTo(toX(i),toY(v));
-        });
+        scores[pi].forEach((v,i)=>{if(i===0)ctx.moveTo(toX(i),toY(v));else ctx.lineTo(toX(i),toY(v));});
         ctx.stroke();
-        // 圓點（最後一個）
         const last=scores[pi].length-1;
-        ctx.fillStyle=color;
-        ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),5,0,Math.PI*2);ctx.fill();
-        ctx.fillStyle='#fff';
-        ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),2.5,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle=color;ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),5,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),2.5,0,Math.PI*2);ctx.fill();
     });
-    // 圖例
     const legend=document.getElementById(`chartLegend_${index}`);
     if(legend){
         legend.innerHTML=game.players.map((p,i)=>`
