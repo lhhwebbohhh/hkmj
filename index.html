@@ -3,305 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🀄 香港麻雀計番 WebApp</title>
+    <title>🀄 香港麻雀計番 WebApp V3.1</title>
     <style>
         :root {
-            --mahjong-green: #1a5d3a;
-            --mahjong-green-dark: #0f3d24;
-            --mahjong-green-light: #2d8659;
-            --mahjong-felt: #0a4028;
-            --gold: #ffd700;
-            --gold-dark: #daa520;
-            --red: #dc2626;
-            --white: #ffffff;
-            --cream: #f5f5dc;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --mahjong-green: #1a5d3a; --mahjong-green-dark: #0f3d24;
+            --mahjong-green-light: #2d8659; --mahjong-felt: #0a4028;
+            --gold: #ffd700; --gold-dark: #daa520; --red: #dc2626;
+            --white: #ffffff; --cream: #f5f5dc; --shadow: rgba(0,0,0,0.3);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin:0; padding:0; box-sizing:border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
-            background: linear-gradient(135deg, var(--mahjong-green) 0%, var(--mahjong-felt) 100%);
-            color: var(--white); min-height: 100vh; padding: 20px; padding-bottom: 80px;
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Microsoft JhengHei',sans-serif;
+            background:linear-gradient(135deg,var(--mahjong-green) 0%,var(--mahjong-felt) 100%);
+            color:var(--white); min-height:100vh; padding:20px; padding-bottom:90px;
         }
-        .container { max-width: 1200px; margin: 0 auto; }
+        .container { max-width:1200px; margin:0 auto; }
         .header {
-            text-align: center; margin-bottom: 30px; padding: 20px;
-            background: rgba(255,255,255,0.1); border-radius: 15px;
-            backdrop-filter: blur(10px); border: 2px solid var(--gold);
+            text-align:center; margin-bottom:30px; padding:20px;
+            background:rgba(255,255,255,0.1); border-radius:15px;
+            backdrop-filter:blur(10px); border:2px solid var(--gold);
         }
-        .header h1 { font-size: 2.5rem; color: var(--gold); text-shadow: 2px 2px 4px var(--shadow); margin-bottom: 5px; }
-        .header .subtitle { font-size: 1rem; color: var(--cream); opacity: 0.9; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .header h1 { font-size:2.2rem; color:var(--gold); text-shadow:2px 2px 4px var(--shadow); margin-bottom:5px; }
+        .header .subtitle { font-size:0.95rem; color:var(--cream); opacity:0.9; }
+        .page { display:none; }
+        .page.active { display:block; animation:fadeIn 0.3s ease-in; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         .card {
-            background: rgba(255,255,255,0.95); color: #333;
-            border-radius: 12px; padding: 25px; margin-bottom: 20px;
-            box-shadow: 0 8px 20px var(--shadow);
+            background:rgba(255,255,255,0.95); color:#333;
+            border-radius:12px; padding:25px; margin-bottom:20px;
+            box-shadow:0 8px 20px var(--shadow);
         }
-        .card h2 {
-            color: var(--mahjong-green); border-bottom: 3px solid var(--gold);
-            padding-bottom: 10px; margin-bottom: 20px; font-size: 1.5rem;
+        .card h2 { color:var(--mahjong-green); border-bottom:3px solid var(--gold); padding-bottom:10px; margin-bottom:20px; font-size:1.4rem; }
+        .form-group { margin-bottom:18px; }
+        .form-group label { display:block; margin-bottom:8px; font-weight:600; color:var(--mahjong-green-dark); }
+        .form-group input[type="text"],.form-group input[type="number"],.form-group select {
+            width:100%; padding:12px; border:2px solid var(--mahjong-green-light);
+            border-radius:8px; font-size:1rem; transition:all 0.3s; background:white;
         }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--mahjong-green-dark); }
-        .form-group input[type="text"], .form-group input[type="number"], .form-group select {
-            width: 100%; padding: 12px; border: 2px solid var(--mahjong-green-light);
-            border-radius: 8px; font-size: 1rem; transition: all 0.3s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none; border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
+        .form-group input:focus,.form-group select:focus {
+            outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(255,215,0,0.2);
         }
         .btn {
-            padding: 12px 24px; border: none; border-radius: 8px;
-            font-size: 1rem; font-weight: 600; cursor: pointer;
-            transition: all 0.3s; box-shadow: 0 4px 6px var(--shadow);
+            padding:12px 24px; border:none; border-radius:8px;
+            font-size:1rem; font-weight:600; cursor:pointer;
+            transition:all 0.3s; box-shadow:0 4px 6px var(--shadow);
         }
-        .btn:active { transform: translateY(2px); }
-        .btn-primary { background: var(--gold); color: var(--mahjong-green-dark); }
-        .btn-primary:hover { background: var(--gold-dark); }
-        .btn-secondary { background: var(--mahjong-green-light); color: var(--white); }
-        .btn-secondary:hover { background: var(--mahjong-green); }
-        .btn-danger { background: var(--red); color: var(--white); }
-        .btn-danger:hover { background: #b91c1c; }
-        .btn-full { width: 100%; }
-        .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .btn:active { transform:translateY(2px); }
+        .btn-primary { background:var(--gold); color:var(--mahjong-green-dark); }
+        .btn-primary:hover { background:var(--gold-dark); }
+        .btn-secondary { background:var(--mahjong-green-light); color:var(--white); }
+        .btn-secondary:hover { background:var(--mahjong-green); }
+        .btn-danger { background:var(--red); color:var(--white); }
+        .btn-danger:hover { background:#b91c1c; }
+        .btn-warning { background:#f59e0b; color:white; }
+        .btn-warning:hover { background:#d97706; }
+        .btn-full { width:100%; }
+        .btn-group { display:flex; gap:10px; flex-wrap:wrap; }
         .toggle-section {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px; background: rgba(42,157,143,0.1);
-            border-radius: 8px; margin-bottom: 10px;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:15px; background:rgba(42,157,143,0.1); border-radius:8px; margin-bottom:10px;
         }
-        .toggle { position: relative; width: 60px; height: 30px; cursor: pointer; }
-        .toggle input { opacity: 0; width: 0; height: 0; }
-        .toggle-slider {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; border-radius: 30px; transition: 0.3s;
-        }
-        .toggle-slider:before {
-            position: absolute; content: ""; height: 22px; width: 22px;
-            left: 4px; bottom: 4px; background-color: white; border-radius: 50%; transition: 0.3s;
-        }
-        .toggle input:checked + .toggle-slider { background-color: var(--gold); }
-        .toggle input:checked + .toggle-slider:before { transform: translateX(30px); }
-        .radio-group { display: flex; gap: 15px; flex-wrap: wrap; }
-        .radio-option { flex: 1; min-width: 150px; }
-        .radio-option input[type="radio"] { display: none; }
-        .radio-option label {
-            display: block; padding: 12px; border: 2px solid var(--mahjong-green-light);
-            border-radius: 8px; text-align: center; cursor: pointer;
-            transition: all 0.3s; background: white;
-        }
-        .radio-option input[type="radio"]:checked + label {
-            background: var(--mahjong-green); color: white;
-            border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255,215,0,0.3);
-        }
-        .radio-option.cheat-option input[type="radio"]:checked + label {
-            background: var(--red); border-color: #b91c1c;
-        }
-        .help-text { font-size: 0.9rem; color: #666; margin-top: 5px; font-style: italic; }
-        .collapsible { background: rgba(42,157,143,0.1); border-radius: 8px; margin-top: 15px; overflow: hidden; }
-        .collapsible-header {
-            padding: 15px; cursor: pointer; display: flex;
-            justify-content: space-between; align-items: center;
-            font-weight: 600; color: var(--mahjong-green-dark);
-        }
-        .collapsible-header:hover { background: rgba(42,157,143,0.2); }
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; padding: 0 15px; }
-        .collapsible-content.open { max-height: 2000px; padding: 15px; }
-        .player-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .player-card {
-            background: white; border: 3px solid var(--mahjong-green-light);
-            border-radius: 12px; padding: 20px; text-align: center;
-            transition: all 0.3s; position: relative;
-        }
-        .player-card.dealer {
-            border-color: var(--gold);
-            background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
-            box-shadow: 0 0 20px rgba(255,215,0,0.4);
-        }
+        .toggle { position:relative; width:60px; height:30px; cursor:pointer; }
+        .toggle input { opacity:0; width:0; height:0; }
+        .toggle-slider { position:absolute; top:0; left:0; right:0; bottom:0; background:#ccc; border-radius:30px; transition:0.3s; }
+        .toggle-slider:before { position:absolute; content:""; height:22px; width:22px; left:4px; bottom:4px; background:white; border-radius:50%; transition:0.3s; }
+        .toggle input:checked + .toggle-slider { background:var(--gold); }
+        .toggle input:checked + .toggle-slider:before { transform:translateX(30px); }
+        .radio-group { display:flex; gap:12px; flex-wrap:wrap; }
+        .radio-option { flex:1; min-width:110px; }
+        .radio-option input[type="radio"] { display:none; }
+        .radio-option label { display:block; padding:11px; border:2px solid var(--mahjong-green-light); border-radius:8px; text-align:center; cursor:pointer; transition:all 0.3s; background:white; font-size:0.95rem; }
+        .radio-option input[type="radio"]:checked + label { background:var(--mahjong-green); color:white; border-color:var(--gold); }
+        .radio-option.cheat-option input[type="radio"]:checked + label { background:var(--red); border-color:#b91c1c; }
+        .collapsible { background:rgba(42,157,143,0.1); border-radius:8px; margin-top:15px; overflow:hidden; }
+        .collapsible-header { padding:14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:600; color:var(--mahjong-green-dark); }
+        .collapsible-header:hover { background:rgba(42,157,143,0.2); }
+        .collapsible-content { max-height:0; overflow:hidden; transition:max-height 0.3s ease; }
+        .collapsible-content.open { max-height:2000px; padding:15px; }
+        .player-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:20px; }
+        .player-card { background:white; border:3px solid var(--mahjong-green-light); border-radius:12px; padding:18px; text-align:center; position:relative; transition:all 0.3s; }
+        .player-card.dealer { border-color:var(--gold); background:linear-gradient(135deg,#fff9e6,#fff); box-shadow:0 0 20px rgba(255,215,0,0.4); }
         .player-card.dealer::before {
-            content: "莊"; position: absolute; top: -10px; right: -10px;
-            background: var(--gold); color: var(--mahjong-green-dark);
-            width: 35px; height: 35px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 8px var(--shadow);
+            content:"莊"; position:absolute; top:-10px; right:-10px;
+            background:var(--gold); color:var(--mahjong-green-dark);
+            width:33px; height:33px; border-radius:50%; display:flex;
+            align-items:center; justify-content:center; font-weight:bold; font-size:1.1rem;
         }
-        .player-name { font-size: 1.3rem; font-weight: bold; color: var(--mahjong-green-dark); margin-bottom: 10px; }
-        .player-score { font-size: 2rem; font-weight: bold; color: var(--mahjong-green); margin-bottom: 5px; }
-        .player-score.positive { color: #059669; }
-        .player-score.negative { color: var(--red); }
-        .player-position { font-size: 0.9rem; color: #666; margin-bottom: 10px; }
-        .game-info {
-            background: rgba(255,215,0,0.2); border-left: 4px solid var(--gold);
-            padding: 15px; border-radius: 8px; margin-bottom: 20px;
-        }
-        .game-info-item { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1.1rem; }
-        .game-info-item strong { color: var(--mahjong-green-dark); }
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--mahjong-green-dark); padding: 15px;
-            display: flex; justify-content: space-around;
-            box-shadow: 0 -4px 20px var(--shadow); z-index: 1000;
-        }
-        .nav-btn {
-            background: none; border: none; color: var(--cream); font-size: 0.8rem;
-            cursor: pointer; display: flex; flex-direction: column;
-            align-items: center; gap: 5px; padding: 5px 10px;
-            border-radius: 8px; transition: all 0.3s;
-        }
-        .nav-btn:hover, .nav-btn.active { background: rgba(255,215,0,0.2); color: var(--gold); }
-        .nav-btn-icon { font-size: 1.5rem; }
-
-        /* 番型分組 */
-        .fan-group { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; }
-        .fan-group-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 15px; background: var(--mahjong-green); color: white;
-            cursor: pointer; font-weight: 600; user-select: none;
-        }
-        .fan-group-header:hover { background: var(--mahjong-green-light); }
-        .fan-group-header .group-badge {
-            background: var(--gold); color: var(--mahjong-green-dark);
-            padding: 2px 10px; border-radius: 20px; font-size: 0.85rem; font-weight: bold;
-        }
-        .fan-group-content {
-            display: none; padding: 10px; background: white;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px;
-        }
-        .fan-group-content.open { display: grid; }
-        .fan-item {
-            display: flex; align-items: center; padding: 10px;
-            background: rgba(42,157,143,0.05); border: 2px solid transparent;
-            border-radius: 8px; cursor: pointer; transition: all 0.2s;
-        }
-        .fan-item:hover { background: rgba(42,157,143,0.1); border-color: var(--mahjong-green-light); }
-        .fan-item input[type="checkbox"] { margin-right: 8px; width: 18px; height: 18px; cursor: pointer; flex-shrink: 0; }
-        .fan-item.checked { background: var(--mahjong-green-light); color: white; border-color: var(--gold); }
-        .fan-label { flex: 1; display: flex; justify-content: space-between; align-items: center; gap: 5px; }
-        .fan-value {
-            font-weight: bold; color: var(--gold); background: rgba(0,0,0,0.2);
-            padding: 2px 6px; border-radius: 5px; font-size: 0.8rem; white-space: nowrap;
-        }
-        .fan-item.checked .fan-value { background: rgba(255,215,0,0.3); color: var(--gold); }
-
-        /* 直接入番 */
-        .direct-fan-input {
-            display: flex; align-items: center; gap: 15px;
-            justify-content: center; padding: 15px;
-            background: rgba(42,157,143,0.05); border-radius: 12px;
-        }
-        .direct-fan-btn {
-            width: 55px; height: 55px; border-radius: 50%; border: none;
-            background: var(--mahjong-green); color: white;
-            font-size: 1.8rem; font-weight: bold; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 8px var(--shadow); transition: all 0.2s;
-        }
-        .direct-fan-btn:hover { background: var(--mahjong-green-light); transform: scale(1.05); }
-        .direct-fan-btn:active { transform: scale(0.95); }
-        .direct-fan-number {
-            width: 100px; text-align: center; font-size: 2.5rem;
-            font-weight: bold; color: var(--mahjong-green-dark);
-            border: 2px solid var(--mahjong-green-light); border-radius: 12px;
-            padding: 10px; background: white;
-        }
-
-        .total-fan-display {
-            background: var(--gold); color: var(--mahjong-green-dark);
-            padding: 20px; border-radius: 12px; text-align: center;
-            margin-bottom: 20px; box-shadow: 0 8px 20px var(--shadow);
-        }
-        .total-fan-display h3 { font-size: 1.2rem; margin-bottom: 10px; }
-        .total-fan-display .fan-number { font-size: 3rem; font-weight: bold; margin-bottom: 5px; }
-        .total-fan-display .money-amount { font-size: 1.5rem; font-weight: bold; }
-
-        .cheat-info-box {
-            display: none; background: rgba(220,38,38,0.08);
-            border-left: 4px solid var(--red);
-            padding: 20px; border-radius: 8px; margin-bottom: 20px;
-        }
-        .cheat-info-box h3 { color: var(--red); margin-bottom: 12px; font-size: 1.2rem; }
-        .cheat-penalty { font-size: 1.5rem; font-weight: bold; color: var(--red); margin-top: 8px; }
-
-        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        .table th { background: var(--mahjong-green); color: white; font-weight: 600; }
-        .table tr:hover { background: rgba(42,157,143,0.05); }
-        .table-center { text-align: center !important; }
-
-        .history-item {
-            background: white; border-left: 4px solid var(--mahjong-green);
-            padding: 15px; margin-bottom: 15px; border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .history-item.cheat-record { border-left-color: var(--red); }
-        .history-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px; font-weight: bold; color: var(--mahjong-green-dark);
-        }
-        .history-details { font-size: 0.95rem; color: #555; line-height: 1.6; }
-        .history-money {
-            margin-top: 10px; padding: 10px;
-            background: rgba(42,157,143,0.05); border-radius: 5px; font-size: 0.9rem;
-        }
-
-        .celebration {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.9); display: none;
-            align-items: center; justify-content: center; z-index: 2000;
-        }
-        .celebration.active { display: flex; }
-        .celebration-content { text-align: center; animation: zoomIn 0.5s ease-out; }
-        @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .celebration h2 { font-size: 3rem; color: var(--gold); text-shadow: 0 0 20px var(--gold); margin-bottom: 20px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .celebration .fan-type { font-size: 2rem; color: white; margin-bottom: 20px; }
-        .celebration .money { font-size: 2.5rem; color: var(--gold); font-weight: bold; }
-
-        .modal {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.7); display: none;
-            align-items: center; justify-content: center; z-index: 1500; padding: 20px;
-        }
-        .modal.active { display: flex; }
-        .modal-content {
-            background: white; border-radius: 12px; padding: 25px;
-            max-width: 600px; max-height: 90vh; overflow-y: auto;
-            width: 100%; box-shadow: 0 20px 60px var(--shadow);
-        }
-        .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 2px solid var(--gold);
-        }
-        .modal-header h3 { color: var(--mahjong-green); font-size: 1.5rem; }
-        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; }
-        .modal-close:hover { color: var(--red); }
-        .settlement-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 15px; background: rgba(42,157,143,0.05);
-            border-radius: 8px; margin-bottom: 10px; font-size: 1.1rem;
-        }
-        .settlement-item.completed { opacity: 0.5; text-decoration: line-through; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .stat-card {
-            background: linear-gradient(135deg, var(--mahjong-green-light) 0%, var(--mahjong-green) 100%);
-            color: white; padding: 20px; border-radius: 12px;
-            text-align: center; box-shadow: 0 4px 12px var(--shadow);
-        }
-        .stat-card-icon { font-size: 2rem; margin-bottom: 10px; }
-        .stat-card-label { font-size: 0.9rem; opacity: 0.9; margin-bottom: 5px; }
-        .stat-card-value { font-size: 1.5rem; font-weight: bold; }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 1.8rem; }
-            .player-grid { grid-template-columns: repeat(2, 1fr); }
-            .btn-group { flex-direction: column; }
-            .radio-group { flex-direction: column; }
-            .table { font-size: 0.85rem; }
-            .table th, .table td { padding: 8px 5px; }
-            .fan-group-content.open { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        .player-emoji { font-size:2rem; margin-bottom:4px; }
+        .player-name { font-size:1.1rem; font-weight:bold; color:var(--mahjong-green-dark); margin-bottom:6px; }
+        .player-score { font-size:1.7rem; font-weight:bold; margin-bottom:4px; }
+        .player-score.positive { color:#059669; }
+        .player-score.negative { color:var(--red); }
+        .player-position { font-size:0.82rem; color:#666; margin-bottom:4px; }
+        .game-info { background:rgba(255,215,0,0.2); border-left:4px solid var(--gold); padding:15px; border-radius:8px; margin-bottom:20px; }
+        .game-info-item { display:flex; justify-content:space-between; margin-bottom:6px; font-size:0.98rem; }
+        .game-info-item strong { color:var(--mahjong-green-dark); }
+        .consecutive-banner { margin-top:8px; padding:10px; background:rgba(220,38,38,0.25); border-radius:8px; color:#ff6b6b; font-weight:bold; text-align:center; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+        #gameTimer { font-family:'Courier New',monospace; font-size:1.05rem; color:var(--gold); font-weight:bold; letter-spacing:2px; }
+        #gameTimer.running { animation:timerPulse 2s infinite; }
+        @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.45} }
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--mahjong-green-dark); padding:10px 4px; display:flex; justify-content:space-around; box-shadow:0 -4px 20px var(--shadow); z-index:1000; }
+        .nav-btn { background:none; border:none; color:var(--cream); font-size:0.68rem; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; padding:4px 6px; border-radius:8px; transition:all 0.3s; }
+        .nav-btn:hover,.nav-btn.active { background:rgba(255,215,0,0.2); color:var(--gold); }
+        .nav-btn-icon { font-size:1.25rem; }
+        .fan-group { margin-bottom:8px; border-radius:8px; overflow:hidden; border:1px solid #e0e0e0; }
+        .fan-group-header { display:flex; justify-content:space-between; align-items:center; padding:11px 14px; background:var(--mahjong-green); color:white; cursor:pointer; font-weight:600; user-select:none; }
+        .fan-group-header:hover { background:var(--mahjong-green-light); }
+        .fan-group-header .group-badge { background:var(--gold); color:var(--mahjong-green-dark); padding:2px 9px; border-radius:20px; font-size:0.82rem; font-weight:bold; }
+        .fan-group-content { display:none; padding:8px; background:white; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:7px; }
+        .fan-group-content.open { display:grid; }
+        .fan-item { display:flex; align-items:center; padding:9px; background:rgba(42,157,143,0.05); border:2px solid transparent; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+        .fan-item:hover { background:rgba(42,157,143,0.1); border-color:var(--mahjong-green-light); }
+        .fan-item input[type="checkbox"] { margin-right:7px; width:17px; height:17px; cursor:pointer; flex-shrink:0; }
+        .fan-item.checked { background:var(--mahjong-green-light); color:white; border-color:var(--gold); }
+        .fan-label { flex:1; display:flex; justify-content:space-between; align-items:center; gap:4px; font-size:0.92rem; }
+        .fan-value { font-weight:bold; color:var(--gold); background:rgba(0,0,0,0.2); padding:2px 5px; border-radius:4px; font-size:0.78rem; white-space:nowrap; }
+        .fan-item.checked .fan-value { background:rgba(255,215,0,0.3); }
+        .direct-fan-input { display:flex; align-items:center; gap:15px; justify-content:center; padding:15px; background:rgba(42,157,143,0.05); border-radius:12px; }
+        .direct-fan-btn { width:52px; height:52px; border-radius:50%; border:none; background:var(--mahjong-green); color:white; font-size:1.7rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 8px var(--shadow); transition:all 0.2s; }
+        .direct-fan-btn:hover { background:var(--mahjong-green-light); transform:scale(1.05); }
+        .direct-fan-number { width:95px; text-align:center; font-size:2.3rem; font-weight:bold; color:var(--mahjong-green-dark); border:2px solid var(--mahjong-green-light); border-radius:12px; padding:9px; background:white; }
+        .total-fan-display { background:var(--gold); color:var(--mahjong-green-dark); padding:18px; border-radius:12px; text-align:center; margin-bottom:18px; box-shadow:0 8px 20px var(--shadow); }
+        .total-fan-display h3 { font-size:1.1rem; margin-bottom:8px; }
+        .total-fan-display .fan-number { font-size:2.8rem; font-weight:bold; margin-bottom:4px; }
+        .total-fan-display .money-amount { font-size:1.4rem; font-weight:bold; }
+        .cheat-info-box { display:none; background:rgba(220,38,38,0.08); border-left:4px solid var(--red); padding:18px; border-radius:8px; margin-bottom:18px; }
+        .cheat-info-box h3 { color:var(--red); margin-bottom:10px; }
+        .cheat-penalty { font-size:1.4rem; font-weight:bold; color:var(--red); margin-top:8px; }
+        .table { width:100%; border-collapse:collapse; margin-top:8px; }
+        .table th,.table td { padding:9px; text-align:left; border-bottom:1px solid #ddd; }
+        .table th { background:var(--mahjong-green); color:white; font-weight:600; font-size:0.9rem; }
+        .table tr:hover { background:rgba(42,157,143,0.05); }
+        .table-center { text-align:center !important; }
+        .positive { color:#059669; } .negative { color:var(--red); }
+        .history-item { background:white; border-left:4px solid var(--mahjong-green); padding:14px; margin-bottom:11px; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08); }
+        .history-item.cheat-record { border-left-color:var(--red); }
+        .history-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-weight:bold; color:var(--mahjong-green-dark); font-size:0.92rem; }
+        .history-details { font-size:0.88rem; color:#555; line-height:1.6; }
+        .history-money { margin-top:7px; padding:7px; background:rgba(42,157,143,0.05); border-radius:5px; font-size:0.85rem; }
+        .celebration { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:2000; }
+        .celebration.active { display:flex; }
+        .celebration-content { text-align:center; animation:zoomIn 0.5s ease-out; padding:20px; }
+        @keyframes zoomIn { from{transform:scale(0.5);opacity:0} to{transform:scale(1);opacity:1} }
+        .celebration h2 { font-size:2.3rem; color:var(--gold); margin-bottom:14px; }
+        .celebration .fan-type { font-size:1.4rem; color:white; margin-bottom:14px; }
+        .celebration .money { font-size:1.9rem; color:var(--gold); font-weight:bold; }
+        .modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); display:none; align-items:center; justify-content:center; z-index:1500; padding:20px; }
+        .modal.active { display:flex; }
+        .modal-content { background:white; border-radius:12px; padding:22px; max-width:650px; max-height:90vh; overflow-y:auto; width:100%; box-shadow:0 20px 60px var(--shadow); }
+        .modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:13px; border-bottom:2px solid var(--gold); }
+        .modal-header h3 { color:var(--mahjong-green); font-size:1.2rem; }
+        .modal-close { background:none; border:none; font-size:1.5rem; cursor:pointer; color:#999; }
+        .modal-close:hover { color:var(--red); }
+        .settlement-item { display:flex; align-items:center; justify-content:space-between; padding:11px 14px; background:rgba(42,157,143,0.05); border-radius:8px; margin-bottom:8px; font-size:0.97rem; }
+        .settlement-item.completed { opacity:0.5; text-decoration:line-through; }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:11px; margin-bottom:18px; }
+        .stat-card { background:linear-gradient(135deg,var(--mahjong-green-light),var(--mahjong-green)); color:white; padding:14px; border-radius:12px; text-align:center; box-shadow:0 4px 12px var(--shadow); }
+        .stat-card-icon { font-size:1.7rem; margin-bottom:7px; }
+        .stat-card-label { font-size:0.82rem; opacity:0.9; margin-bottom:4px; }
+        .stat-card-value { font-size:1.1rem; font-weight:bold; }
+        .player-setup-card { background:rgba(42,157,143,0.05); border:2px solid var(--mahjong-green-light); border-radius:12px; padding:14px; margin-bottom:14px; }
+        .player-setup-header { display:flex; align-items:center; gap:10px; margin-bottom:9px; font-weight:bold; color:var(--mahjong-green-dark); }
+        .selected-emoji-display { font-size:1.9rem; }
+        .emoji-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:5px; margin-top:7px; }
+        .emoji-btn { font-size:1.5rem; padding:5px; border:2px solid transparent; border-radius:7px; cursor:pointer; background:rgba(42,157,143,0.05); text-align:center; transition:all 0.2s; }
+        .emoji-btn:hover { background:rgba(42,157,143,0.15); border-color:var(--mahjong-green-light); }
+        .emoji-btn.selected { border-color:var(--gold); background:rgba(255,215,0,0.2); }
+        .saved-game-card { background:white; border-radius:12px; padding:16px; margin-bottom:11px; box-shadow:0 2px 8px rgba(0,0,0,0.08); cursor:pointer; border-left:4px solid var(--mahjong-green); transition:all 0.2s; }
+        .saved-game-card:hover { transform:translateY(-2px); box-shadow:0 4px 16px rgba(0,0,0,0.14); }
+        .saved-game-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-weight:bold; color:var(--mahjong-green-dark); }
+        .saved-game-players { display:grid; grid-template-columns:repeat(2,1fr); gap:5px; margin-top:7px; }
+        .saved-game-player { display:flex; justify-content:space-between; align-items:center; padding:4px 7px; background:rgba(42,157,143,0.05); border-radius:5px; font-size:0.85rem; }
+        .delete-game-btn { background:none; border:none; color:#ccc; cursor:pointer; font-size:1.05rem; padding:3px 6px; border-radius:5px; transition:all 0.2s; }
+        .delete-game-btn:hover { color:var(--red); background:rgba(220,38,38,0.1); }
+        .chart-container { position:relative; width:100%; overflow-x:auto; background:white; border-radius:12px; padding:14px; margin-bottom:18px; }
+        .chart-legend { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; margin-bottom:9px; }
+        .legend-item { display:flex; align-items:center; gap:5px; font-size:0.83rem; color:#555; }
+        .legend-dot { width:11px; height:11px; border-radius:50%; flex-shrink:0; }
+        .duration-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(255,215,0,0.15); border:1px solid var(--gold); color:var(--mahjong-green-dark); padding:7px 13px; border-radius:20px; font-size:0.88rem; font-weight:600; margin-bottom:14px; }
+        @media(max-width:768px){
+            .header h1{font-size:1.5rem;}
+            .player-grid{grid-template-columns:repeat(2,1fr);}
+            .btn-group{flex-direction:column;}
+            .radio-group{flex-direction:column;}
+            .table{font-size:0.8rem;}
+            .table th,.table td{padding:6px 3px;}
+            .fan-group-content.open{grid-template-columns:repeat(auto-fill,minmax(125px,1fr));}
+            .stats-grid{grid-template-columns:repeat(2,1fr);}
+            .saved-game-players{grid-template-columns:1fr;}
         }
     </style>
 </head>
@@ -309,7 +199,7 @@
 <div class="container">
     <div class="header">
         <h1>🀄 香港麻雀計番 WebApp</h1>
-        <p class="subtitle">全功能牌局管理系統 V2</p>
+        <p class="subtitle">全功能牌局管理系統 V3.1 ⏱️</p>
     </div>
 
     <!-- 設定頁面 -->
@@ -319,111 +209,59 @@
             <div class="form-group">
                 <label>🌶️ 辣度設定</label>
                 <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="spicyFull" name="spicyLevel" value="full" checked>
-                        <label for="spicyFull">🔥🔥 辣辣上<br><small>(每番翻倍)</small></label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="spicyHalf" name="spicyLevel" value="half">
-                        <label for="spicyHalf">🌶️ 半辣上<br><small>(4番後隔番×1.5)</small></label>
-                    </div>
+                    <div class="radio-option"><input type="radio" id="spicyFull" name="spicyLevel" value="full" checked><label for="spicyFull">🔥🔥 辣辣上<br><small>每番翻倍</small></label></div>
+                    <div class="radio-option"><input type="radio" id="spicyHalf" name="spicyLevel" value="half"><label for="spicyHalf">🌶️ 半辣上<br><small>4番後隔番×1.5</small></label></div>
                 </div>
-                <p class="help-text">辣辣上：每番翻倍 | 半辣上：5番=4番×1.5，6番=4番×2，如此類推</p>
             </div>
             <div class="form-group">
                 <label>💰 底注設定</label>
                 <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="base1" name="baseRate" value="1" checked>
-                        <label for="base1">二五雞<br><small>(基本$1)</small></label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="base2" name="baseRate" value="2">
-                        <label for="base2">五一<br><small>(基本$2)</small></label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="base4" name="baseRate" value="4">
-                        <label for="base4">一二蚊<br><small>(基本$4)</small></label>
-                    </div>
+                    <div class="radio-option"><input type="radio" id="base1" name="baseRate" value="1" checked><label for="base1">二五雞<br><small>$1</small></label></div>
+                    <div class="radio-option"><input type="radio" id="base2" name="baseRate" value="2"><label for="base2">五一<br><small>$2</small></label></div>
+                    <div class="radio-option"><input type="radio" id="base4" name="baseRate" value="4"><label for="base4">一二蚊<br><small>$4</small></label></div>
                 </div>
             </div>
             <div class="form-group">
                 <label>起糊番數</label>
-                <select id="minFan">
-                    <option value="1">1番起糊</option>
-                    <option value="2">2番起糊</option>
-                    <option value="3" selected>3番起糊</option>
-                </select>
-                <p class="help-text">最少要幾多番先可以食糊</p>
+                <select id="minFan"><option value="1">1番起糊</option><option value="2">2番起糊</option><option value="3" selected>3番起糊</option></select>
             </div>
             <div class="form-group">
                 <label>爆棚番數</label>
-                <select id="maxFan">
-                    <option value="8" selected>8番爆棚</option>
-                    <option value="10">10番爆棚</option>
-                    <option value="13">13番爆棚</option>
-                </select>
-                <p class="help-text">超過此番數一律當爆棚計算，詐糊亦以此番數罰款</p>
+                <select id="maxFan"><option value="8" selected>8番爆棚</option><option value="10">10番爆棚</option><option value="13">13番爆棚</option></select>
             </div>
-            <div class="toggle-section">
-                <span><strong>流局連莊</strong><br><small>流局時莊家是否連莊</small></span>
-                <label class="toggle">
-                    <input type="checkbox" id="drawContinue" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div class="toggle-section">
-                <span><strong>包牌規則</strong><br><small>開啟包牌功能</small></span>
-                <label class="toggle">
-                    <input type="checkbox" id="baoPai" checked>
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
+            <div class="toggle-section"><span><strong>流局連莊</strong><br><small>流局時莊家連莊</small></span><label class="toggle"><input type="checkbox" id="drawContinue" checked><span class="toggle-slider"></span></label></div>
+            <div class="toggle-section"><span><strong>包牌規則</strong><br><small>開啟包牌功能</small></span><label class="toggle"><input type="checkbox" id="baoPai" checked><span class="toggle-slider"></span></label></div>
             <div class="collapsible">
-                <div class="collapsible-header" onclick="toggleCollapsible(this)">
-                    <span>💡 規則說明</span><span>▼</span>
-                </div>
+                <div class="collapsible-header" onclick="toggleCollapsible(this)"><span>💡 規則說明</span><span>▼</span></div>
                 <div class="collapsible-content">
-                    <p><strong>辣度：</strong>辣辣上每番翻倍；半辣上4番後：5番=4番×1.5，6番=4番×2，如此類推。</p>
-                    <p><strong>起糊番數：</strong>最少要達到此番數才可以食糊。</p>
-                    <p><strong>爆棚：</strong>超過設定番數就封頂計算。</p>
-                    <p><strong>詐糊：</strong>詐糊者須賠其他三家每人上限番數自摸金額（包賠）。</p>
-                    <p><strong>全銃制：</strong>自摸三家攤分，出銃者付台價。</p>
+                    <p style="margin-bottom:8px;color:#555;"><strong>辣辣上：</strong>每番翻倍。</p>
+                    <p style="margin-bottom:8px;color:#555;"><strong>半辣上：</strong>4番後隔番×1.5上升。</p>
+                    <p style="margin-bottom:8px;color:#555;"><strong>詐糊：</strong>詐糊者賠三家各上限番數台價。</p>
+                    <p style="color:#555;"><strong>全銃制：</strong>自摸三家各付台價；出銃者付台價；包牌者獨自賠×3。</p>
                 </div>
             </div>
         </div>
         <div class="card">
             <h2>👥 玩家設定</h2>
-            <div class="form-group">
-                <label>東家（起莊）</label>
-                <input type="text" id="player0" value="玩家1" placeholder="輸入玩家名稱">
-            </div>
-            <div class="form-group">
-                <label>南家</label>
-                <input type="text" id="player1" value="玩家2" placeholder="輸入玩家名稱">
-            </div>
-            <div class="form-group">
-                <label>西家</label>
-                <input type="text" id="player2" value="玩家3" placeholder="輸入玩家名稱">
-            </div>
-            <div class="form-group">
-                <label>北家</label>
-                <input type="text" id="player3" value="玩家4" placeholder="輸入玩家名稱">
-            </div>
+            <div id="playerSetupContainer"></div>
             <button class="btn btn-primary btn-full" onclick="startGame()">開始牌局 🎮</button>
         </div>
     </div>
 
-    <!-- 主遊戲頁面 -->
+    <!-- 遊戲頁面 -->
     <div id="gamePage" class="page">
         <div class="game-info">
             <div class="game-info-item"><strong>當前局數：</strong><span id="currentRound">東一局</span></div>
             <div class="game-info-item"><strong>第幾局：</strong><span id="roundCount">第 1 局</span></div>
+            <div class="game-info-item"><strong>進度：</strong><span id="remainingRounds" style="color:var(--gold);"></span></div>
+            <div class="game-info-item"><strong>⏱️ 遊戲時間：</strong><span id="gameTimer">00:00:00</span></div>
+            <div id="consecutiveInfo" style="display:none;" class="consecutive-banner"></div>
         </div>
         <div class="player-grid" id="playerGrid"></div>
         <div class="btn-group">
             <button class="btn btn-primary" style="flex:2;" onclick="showRecordWin()">記錄食糊 🎯</button>
             <button class="btn btn-secondary" onclick="recordDraw()">流局 ⏭️</button>
+            <button class="btn btn-warning" id="undoBtn" style="display:none;" onclick="undoLastRecord()">悔棋 ↩️</button>
             <button class="btn btn-danger" onclick="endGame()">結束 🏁</button>
         </div>
     </div>
@@ -432,100 +270,47 @@
     <div id="recordPage" class="page">
         <div class="card">
             <h2>🎯 記錄食糊</h2>
-            <div class="form-group">
-                <label>食糊者 / 詐糊者</label>
-                <div class="radio-group" id="winnerSelect"></div>
-            </div>
+            <div class="form-group"><label>食糊者 / 詐糊者</label><div class="radio-group" id="winnerSelect"></div></div>
             <div class="form-group">
                 <label>食糊方式</label>
                 <div class="radio-group">
-                    <div class="radio-option">
-                        <input type="radio" id="selfDraw" name="winMethod" value="self" checked onchange="updateWinMethod()">
-                        <label for="selfDraw">自摸 🙌</label>
-                    </div>
-                    <div class="radio-option">
-                        <input type="radio" id="fromOther" name="winMethod" value="other" onchange="updateWinMethod()">
-                        <label for="fromOther">出銃 🎯</label>
-                    </div>
-                    <div class="radio-option cheat-option">
-                        <input type="radio" id="cheatWin" name="winMethod" value="cheat" onchange="updateWinMethod()">
-                        <label for="cheatWin">詐糊 ❌</label>
-                    </div>
+                    <div class="radio-option"><input type="radio" id="selfDraw" name="winMethod" value="self" checked onchange="updateWinMethod()"><label for="selfDraw">自摸 🙌</label></div>
+                    <div class="radio-option"><input type="radio" id="fromOther" name="winMethod" value="other" onchange="updateWinMethod()"><label for="fromOther">出銃 🎯</label></div>
+                    <div class="radio-option cheat-option"><input type="radio" id="cheatWin" name="winMethod" value="cheat" onchange="updateWinMethod()"><label for="cheatWin">詐糊 ❌</label></div>
                 </div>
             </div>
-
-            <!-- 出銃者 -->
-            <div class="form-group" id="loserSelectGroup" style="display:none;">
-                <label>出銃者</label>
-                <div class="radio-group" id="loserSelect"></div>
-            </div>
-
-            <!-- 包牌 -->
+            <div class="form-group" id="loserSelectGroup" style="display:none;"><label>出銃者</label><div class="radio-group" id="loserSelect"></div></div>
             <div class="form-group" id="baoPaiSelectGroup" style="display:none;">
                 <label>包牌者</label>
-                <div class="toggle-section">
-                    <span><strong>有包牌</strong><br><small>包牌者獨自賠全部錢</small></span>
-                    <label class="toggle">
-                        <input type="checkbox" id="hasBaoPai" onchange="updateBaoPai()">
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="radio-group" id="baoPaiPersonSelect" style="display:none; margin-top:10px;"></div>
+                <div class="toggle-section"><span><strong>有包牌</strong><br><small>包牌者獨自賠全部</small></span><label class="toggle"><input type="checkbox" id="hasBaoPai" onchange="updateBaoPai()"><span class="toggle-slider"></span></label></div>
+                <div class="radio-group" id="baoPaiPersonSelect" style="display:none;margin-top:10px;"></div>
             </div>
-
-            <!-- 詐糊提示 -->
-            <div class="cheat-info-box" id="cheatInfo">
-                <h3>⚠️ 詐糊罰則（包賠）</h3>
-                <div id="cheatInfoText"></div>
-            </div>
-
-            <!-- 番型區域 -->
+            <div class="cheat-info-box" id="cheatInfo"><h3>⚠️ 詐糊罰則</h3><div id="cheatInfoText"></div></div>
             <div id="fanSelectorWrapper">
-                <!-- 模式切換 -->
                 <div class="form-group">
                     <label>入番方式</label>
                     <div class="radio-group">
-                        <div class="radio-option">
-                            <input type="radio" id="modeSelect" name="fanMode" value="select" checked onchange="updateFanMode()">
-                            <label for="modeSelect">選番型 📋</label>
-                        </div>
-                        <div class="radio-option">
-                            <input type="radio" id="modeDirect" name="fanMode" value="direct" onchange="updateFanMode()">
-                            <label for="modeDirect">直接入番 ✏️</label>
-                        </div>
+                        <div class="radio-option"><input type="radio" id="modeSelect" name="fanMode" value="select" checked onchange="updateFanMode()"><label for="modeSelect">選番型 📋</label></div>
+                        <div class="radio-option"><input type="radio" id="modeDirect" name="fanMode" value="direct" onchange="updateFanMode()"><label for="modeDirect">直接入番 ✏️</label></div>
                     </div>
                 </div>
-
-                <!-- 選番型模式 -->
-                <div id="fanSelectMode">
-                    <div class="form-group">
-                        <label>選擇番型 <small style="color:#999;">（點擊分組展開）</small></label>
-                        <div id="fanGroupContainer"></div>
-                    </div>
-                </div>
-
-                <!-- 直接入番模式 -->
+                <div id="fanSelectMode"><div class="form-group"><label>選擇番型 <small style="color:#999;">（點擊展開）</small></label><div id="fanGroupContainer"></div></div></div>
                 <div id="fanDirectMode" style="display:none;">
-                    <div class="form-group">
-                        <label>輸入番數</label>
+                    <div class="form-group"><label>輸入番數</label>
                         <div class="direct-fan-input">
                             <button class="direct-fan-btn" onclick="adjustDirectFan(-1)">－</button>
-                            <input type="number" id="directFanInput" value="3" min="0" max="99"
-                                class="direct-fan-number" oninput="updateTotalFan()">
+                            <input type="number" id="directFanInput" value="3" min="0" max="99" class="direct-fan-number" oninput="updateTotalFan()">
                             <button class="direct-fan-btn" onclick="adjustDirectFan(1)">＋</button>
                         </div>
                     </div>
                 </div>
-
-                <!-- 總番數顯示 -->
                 <div class="total-fan-display">
                     <h3>總番數</h3>
                     <div class="fan-number" id="totalFanDisplay">0 番</div>
                     <div class="money-amount" id="totalMoneyDisplay">$0</div>
-                    <p id="capMessage" style="margin-top:10px; font-size:0.9rem;"></p>
+                    <p id="capMessage" style="margin-top:7px;font-size:0.88rem;"></p>
                 </div>
             </div>
-
             <div class="btn-group">
                 <button class="btn btn-primary" style="flex:1;" onclick="confirmWin()">確認 ✅</button>
                 <button class="btn btn-secondary" onclick="cancelRecord()">取消 ❌</button>
@@ -538,44 +323,45 @@
         <div class="card">
             <h2>📋 番數對照表</h2>
             <table class="table">
-                <thead><tr><th class="table-center">番數</th><th>牌型名稱</th><th>說明</th></tr></thead>
+                <thead><tr><th class="table-center">番數</th><th>牌型</th><th>說明</th></tr></thead>
                 <tbody>
-                    <tr><td class="table-center"><strong>1番</strong></td><td>平糊</td><td>順子組成，冇字牌將牌</td></tr>
-                    <tr><td class="table-center"></td><td>自摸</td><td>自己摸牌食糊</td></tr>
-                    <tr><td class="table-center"></td><td>門前清</td><td>冇上、碰、明槓，自摸食糊</td></tr>
-                    <tr><td class="table-center"></td><td>正花</td><td>自己門風或圈風的花牌</td></tr>
-                    <tr><td class="table-center"></td><td>門風刻</td><td>三隻自己門風刻子</td></tr>
-                    <tr><td class="table-center"></td><td>圈風刻</td><td>三隻圈風刻子</td></tr>
+                    <tr><td class="table-center"><strong>1番</strong></td><td>平糊</td><td>順子，冇字牌</td></tr>
+                    <tr><td></td><td>自摸</td><td>自己摸牌食糊</td></tr>
+                    <tr><td></td><td>門前清</td><td>冇上碰槓，自摸</td></tr>
+                    <tr><td></td><td>正花</td><td>門風或圈風花牌</td></tr>
+                    <tr><td></td><td>門風刻</td><td>三隻門風刻子（例如：東位碰東）</td></tr>
+                    <tr><td></td><td>圈風刻</td><td>三隻圈風刻子（例如：東圈碰東）</td></tr>
+                    <tr><td></td><td>紅中發財白板刻</td><td>三隻中/發/白刻子</td></tr>
                     <tr><td class="table-center"><strong>2番</strong></td><td>一台花</td><td>摸齊春夏秋冬或梅蘭菊竹</td></tr>
-                    <tr><td class="table-center"><strong>3番</strong></td><td>對對糊</td><td>四組刻子（或槓）</td></tr>
-                    <tr><td class="table-center"></td><td>混一色</td><td>單一花色 + 字牌</td></tr>
-                    <tr><td class="table-center"><strong>6番</strong></td><td>小三元</td><td>中發白，兩組刻子+一對眼</td></tr>
-                    <tr><td class="table-center"></td><td>小四喜</td><td>東南西北，三組刻子+一對眼</td></tr>
-                    <tr><td class="table-center"><strong>7番</strong></td><td>清一色</td><td>全部單一花色，冇字牌</td></tr>
-                    <tr><td class="table-center"></td><td>字一色</td><td>全部字牌</td></tr>
-                    <tr><td class="table-center"><strong>8番</strong></td><td>大花糊</td><td>摸齊全部8隻花牌食糊</td></tr>
+                    <tr><td class="table-center"><strong>3番</strong></td><td>對對糊</td><td>四組刻子</td></tr>
+                    <tr><td></td><td>混一色</td><td>單一花色+字牌</td></tr>
+                    <tr><td class="table-center"><strong>6番</strong></td><td>小三元</td><td>中發白兩刻+一對眼</td></tr>
+                    <tr><td></td><td>小四喜</td><td>東南西北三刻+一對眼</td></tr>
+                    <tr><td class="table-center"><strong>7番</strong></td><td>清一色</td><td>全部單一花色</td></tr>
+                    <tr><td></td><td>字一色</td><td>全部字牌</td></tr>
+                    <tr><td class="table-center"><strong>8番</strong></td><td>大花糊</td><td>摸齊全部8隻花牌</td></tr>
                     <tr><td class="table-center"><strong>10番</strong></td><td>大三元</td><td>中發白三組刻子</td></tr>
-                    <tr><td class="table-center"></td><td>大四喜</td><td>東南西北四組刻子</td></tr>
+                    <tr><td></td><td>大四喜</td><td>東南西北四組刻子</td></tr>
                     <tr><td class="table-center"><strong>13番</strong></td><td>十三么</td><td>19萬19筒19索7字各一</td></tr>
-                    <tr><td class="table-center"></td><td>天糊</td><td>莊家起手食糊</td></tr>
-                    <tr><td class="table-center"></td><td>地糊</td><td>莊家出第一隻牌即食糊</td></tr>
+                    <tr><td></td><td>人糊</td><td>閒家在開局後第一輪內胡別家出的</td></tr>
+                    <tr><td></td><td>天糊</td><td>莊家起手食糊</td></tr>
+                    <tr><td></td><td>地糊</td><td>莊家出第一隻即食糊</td></tr>
                 </tbody>
             </table>
         </div>
         <div class="card">
             <h2>💰 計分說明</h2>
-            <div style="background:rgba(255,215,0,0.2); border-left:4px solid var(--gold); padding:15px; border-radius:8px; margin-bottom:20px;">
-                <p style="margin:0; color:var(--mahjong-green-dark);"><strong>全銃制規則：</strong></p>
-                <ul style="margin:10px 0 0 20px; color:#555;">
+            <div style="background:rgba(255,215,0,0.2);border-left:4px solid var(--gold);padding:14px;border-radius:8px;margin-bottom:14px;">
+                <ul style="margin:0 0 0 18px;color:#555;font-size:0.95rem;">
                     <li><strong>自摸：</strong>三家各付台價</li>
                     <li><strong>出銃：</strong>出銃者付台價</li>
-                    <li><strong>包牌：</strong>包牌者獨自賠台價×3</li>
-                    <li><strong>詐糊：</strong>詐糊者賠三家各上限番數台價</li>
+                    <li><strong>包牌：</strong>包牌者賠台價×3</li>
+                    <li><strong>詐糊：</strong>賠三家各上限番台價</li>
                 </ul>
             </div>
-            <h3 style="color:var(--mahjong-green); margin-top:20px;">🔥🔥 辣辣上</h3>
+            <h3 style="color:var(--mahjong-green);margin-bottom:7px;">🔥🔥 辣辣上</h3>
             <table class="table">
-                <thead><tr><th class="table-center">番數</th><th class="table-center">二五雞</th><th class="table-center">五一</th><th class="table-center">一二蚊</th></tr></thead>
+                <thead><tr><th class="table-center">番</th><th class="table-center">二五雞</th><th class="table-center">五一</th><th class="table-center">一二蚊</th></tr></thead>
                 <tbody>
                     <tr><td class="table-center">1</td><td class="table-center">$2</td><td class="table-center">$4</td><td class="table-center">$8</td></tr>
                     <tr><td class="table-center">2</td><td class="table-center">$4</td><td class="table-center">$8</td><td class="table-center">$16</td></tr>
@@ -587,9 +373,9 @@
                     <tr><td class="table-center">8+</td><td class="table-center">$256</td><td class="table-center">$512</td><td class="table-center">$1024</td></tr>
                 </tbody>
             </table>
-            <h3 style="color:var(--mahjong-green); margin-top:30px;">🌶️ 半辣上</h3>
+            <h3 style="color:var(--mahjong-green);margin-top:18px;margin-bottom:7px;">🌶️ 半辣上</h3>
             <table class="table">
-                <thead><tr><th class="table-center">番數</th><th class="table-center">二五雞</th><th class="table-center">五一</th><th class="table-center">一二蚊</th></tr></thead>
+                <thead><tr><th class="table-center">番</th><th class="table-center">二五雞</th><th class="table-center">五一</th><th class="table-center">一二蚊</th></tr></thead>
                 <tbody>
                     <tr><td class="table-center">1</td><td class="table-center">$2</td><td class="table-center">$4</td><td class="table-center">$8</td></tr>
                     <tr><td class="table-center">2</td><td class="table-center">$4</td><td class="table-center">$8</td><td class="table-center">$16</td></tr>
@@ -609,80 +395,51 @@
         <div class="card">
             <h2>📊 統計數據</h2>
             <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-card-icon">🏆</div>
-                    <div class="stat-card-label">食糊王</div>
-                    <div class="stat-card-value" id="winKing">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">🎯</div>
-                    <div class="stat-card-label">自摸王</div>
-                    <div class="stat-card-value" id="selfDrawKing">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">💀</div>
-                    <div class="stat-card-label">出銃王</div>
-                    <div class="stat-card-value" id="loserKing">-</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-card-icon">🌟</div>
-                    <div class="stat-card-label">最高番數</div>
-                    <div class="stat-card-value" id="highestFan">-</div>
-                </div>
-                <div class="stat-card" style="background:linear-gradient(135deg,#b91c1c,#dc2626);">
-                    <div class="stat-card-icon">❌</div>
-                    <div class="stat-card-label">詐糊次數</div>
-                    <div class="stat-card-value" id="cheatKing">-</div>
-                </div>
+                <div class="stat-card"><div class="stat-card-icon">🏆</div><div class="stat-card-label">食糊王</div><div class="stat-card-value" id="winKing">-</div></div>
+                <div class="stat-card"><div class="stat-card-icon">🎯</div><div class="stat-card-label">自摸王</div><div class="stat-card-value" id="selfDrawKing">-</div></div>
+                <div class="stat-card"><div class="stat-card-icon">💀</div><div class="stat-card-label">出銃王</div><div class="stat-card-value" id="loserKing">-</div></div>
+                <div class="stat-card"><div class="stat-card-icon">🌟</div><div class="stat-card-label">最高番數</div><div class="stat-card-value" id="highestFan">-</div></div>
+                <div class="stat-card" style="background:linear-gradient(135deg,#b91c1c,#dc2626);"><div class="stat-card-icon">❌</div><div class="stat-card-label">詐糊次數</div><div class="stat-card-value" id="cheatKing">-</div></div>
+                <div class="stat-card" style="background:linear-gradient(135deg,#7c3aed,#5b21b6);"><div class="stat-card-icon">👑</div><div class="stat-card-label">最長連莊</div><div class="stat-card-value" id="maxConsecutiveStat">-</div></div>
             </div>
             <table class="table">
-                <thead>
-                    <tr>
-                        <th>玩家</th>
-                        <th class="table-center">金額</th>
-                        <th class="table-center">食糊</th>
-                        <th class="table-center">自摸</th>
-                        <th class="table-center">出銃</th>
-                        <th class="table-center">詐糊</th>
-                        <th class="table-center">平均番</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>玩家</th><th class="table-center">金額</th><th class="table-center">食糊</th><th class="table-center">自摸</th><th class="table-center">出銃</th><th class="table-center">詐糊</th><th class="table-center">平均番</th></tr></thead>
                 <tbody id="statsTableBody"></tbody>
+            </table>
+            <h3 style="color:var(--mahjong-green);margin-top:18px;margin-bottom:7px;">🀄 番型排行</h3>
+            <table class="table">
+                <thead><tr><th>番型</th><th class="table-center">次數</th></tr></thead>
+                <tbody id="fanStatsBody"><tr><td colspan="2" style="text-align:center;color:#999;">暫無數據</td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <!-- 歷史記錄頁面 -->
+    <!-- 本局記錄 -->
     <div id="historyPage" class="page">
+        <div class="card"><h2>📜 本局記錄</h2><div id="historyList"><p style="text-align:center;color:#999;padding:40px;">暫無記錄</p></div></div>
+    </div>
+
+    <!-- 歷史牌局 -->
+    <div id="savedGamesPage" class="page">
         <div class="card">
-            <h2>📜 歷史記錄</h2>
-            <div id="historyList">
-                <p style="text-align:center; color:#999; padding:40px;">暫無記錄</p>
-            </div>
+            <h2>🗂️ 歷史牌局</h2>
+            <p style="color:#666;margin-bottom:14px;font-size:0.88rem;">最多儲存 15 局</p>
+            <div id="savedGamesList"><p style="text-align:center;color:#999;padding:40px;">暫無歷史記錄</p></div>
         </div>
     </div>
 </div>
 
 <!-- 底部導航 -->
 <div class="bottom-nav">
-    <button class="nav-btn active" onclick="showPage('gamePage')">
-        <span class="nav-btn-icon">🎮</span><span>遊戲</span>
-    </button>
-    <button class="nav-btn" onclick="showPage('fanTablePage')">
-        <span class="nav-btn-icon">📋</span><span>番數表</span>
-    </button>
-    <button class="nav-btn" onclick="showPage('statsPage')">
-        <span class="nav-btn-icon">📊</span><span>統計</span>
-    </button>
-    <button class="nav-btn" onclick="showPage('historyPage')">
-        <span class="nav-btn-icon">📜</span><span>記錄</span>
-    </button>
-    <button class="nav-btn" onclick="showPage('setupPage')">
-        <span class="nav-btn-icon">⚙️</span><span>設定</span>
-    </button>
+    <button class="nav-btn active" onclick="showPage('gamePage')"><span class="nav-btn-icon">🎮</span><span>遊戲</span></button>
+    <button class="nav-btn" onclick="showPage('fanTablePage')"><span class="nav-btn-icon">📋</span><span>番數表</span></button>
+    <button class="nav-btn" onclick="showPage('statsPage')"><span class="nav-btn-icon">📊</span><span>統計</span></button>
+    <button class="nav-btn" onclick="showPage('historyPage')"><span class="nav-btn-icon">📜</span><span>本局</span></button>
+    <button class="nav-btn" onclick="showPage('savedGamesPage')"><span class="nav-btn-icon">🗂️</span><span>歷史局</span></button>
+    <button class="nav-btn" onclick="showPage('setupPage')"><span class="nav-btn-icon">⚙️</span><span>設定</span></button>
 </div>
 
-<!-- 慶祝動畫 -->
+<!-- 慶祝 -->
 <div id="celebration" class="celebration">
     <div class="celebration-content">
         <h2>🎊 恭喜恭喜！ 🎊</h2>
@@ -695,660 +452,956 @@
 <!-- 找數Modal -->
 <div id="settlementModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <h3>💸 找數方案</h3>
-            <button class="modal-close" onclick="closeSettlement()">✕</button>
-        </div>
+        <div class="modal-header"><h3>💸 找數方案</h3><button class="modal-close" onclick="closeSettlement()">✕</button></div>
         <div id="settlementContent"></div>
     </div>
 </div>
 
+<!-- 歷史詳情Modal -->
+<div id="savedGameModal" class="modal">
+    <div class="modal-content" style="max-width:700px;">
+        <div class="modal-header"><h3 id="savedGameModalTitle">牌局詳情</h3><button class="modal-close" onclick="closeSavedGameModal()">✕</button></div>
+        <div id="savedGameModalContent"></div>
+    </div>
+</div>
 <script>
-    let gameState = {
-        settings: { spicyLevel: 'half', baseRate: 1, minFan: 3, maxFan: 8, drawContinue: true, baoPai: true },
-        players: [], currentDealer: 0, roundNumber: 1, consecutiveDealer: 0, history: [], stats: {}
-    };
+// ═══════════════════════════════════════════
+// 常數
+// ═══════════════════════════════════════════
+const EMOJI_OPTIONS=['😀','😎','🤩','🥳','😤','🤔','😴','🥵','🤑','👑','🦁','🐯','🐼','🦊','🐸','🐲','🍀','⭐','🔥','💎','🀄','🎯','🎲','🎮','🏆','💪','👻','🤖','🦄','🌈'];
+const MAX_SAVED_GAMES=15;
+const CHART_COLORS=['#1a5d3a','#dc2626','#2563eb','#d97706'];
+const fanTypes=[
+    {name:'平糊',value:1},{name:'自摸',value:1},{name:'門前清',value:1},
+    {name:'紅中',value:1},{name:'發財',value:1},{name:'白板',value:1},
+    {name:'正花',value:1},{name:'門風刻',value:1},{name:'圈風刻',value:1},
+    {name:'搶槓糊',value:1},{name:'槓上自摸',value:1},{name:'海底撈月',value:1},
+    {name:'一台花',value:2},{name:'對對糊',value:3},{name:'混一色',value:3},
+    {name:'小三元',value:6},{name:'小四喜',value:6},{name:'清一色',value:7},
+    {name:'字一色',value:7},{name:'大花糊',value:8},{name:'大三元',value:10},
+    {name:'大四喜',value:10},{name:'十三么',value:13},{name:'天糊',value:13},
+    {name:'地糊',value:13},{name:'人糊',value:13},{name:'九子連環',value:13},
+    {name:'十八羅漢',value:13}
+];
 
-    const fanTypes = [
-        { name: '平糊',     value: 1  },
-        { name: '自摸',     value: 1  },
-        { name: '門前清',   value: 1  },
-        { name: '正花',     value: 1  },
-        { name: '門風刻',   value: 1  },
-        { name: '圈風刻',   value: 1  },
-        { name: '搶槓糊',   value: 1  },
-        { name: '槓上自摸', value: 1  },
-        { name: '海底撈月', value: 1  },
-        { name: '一台花',   value: 2  },
-        { name: '對對糊',   value: 3  },
-        { name: '混一色',   value: 3  },
-        { name: '小三元',   value: 6  },
-        { name: '小四喜',   value: 6  },
-        { name: '清一色',   value: 7  },
-        { name: '字一色',   value: 7  },
-        { name: '大花糊',   value: 8  },
-        { name: '大三元',   value: 10 },
-        { name: '大四喜',   value: 10 },
-        { name: '十三么',   value: 13 },
-        { name: '天糊',     value: 13 },
-        { name: '地糊',     value: 13 },
-        { name: '人糊',     value: 13 },
-        { name: '九子連環', value: 13 },
-        { name: '十八羅漢', value: 13 }
-    ];
+// ═══════════════════════════════════════════
+// 狀態
+// ═══════════════════════════════════════════
+let gameState={
+    settings:{spicyLevel:'full',baseRate:1,minFan:3,maxFan:8,drawContinue:true,baoPai:true},
+    players:[],currentDealer:0,roundNumber:1,consecutiveDealer:0,
+    history:[],stats:{},maxConsecutive:0,maxConsecutivePlayer:'',startTime:null
+};
+let playerProfiles=[];
 
-    function init() {
-        const saved = localStorage.getItem('mahjongGame');
-        if (saved) {
-            if (confirm('發現未完成的牌局，是否繼續？')) {
-                gameState = JSON.parse(saved);
-                showPage('gamePage');
-                updateGameDisplay();
-            } else {
-                localStorage.removeItem('mahjongGame');
+// ═══════════════════════════════════════════
+// ⏱️ 計時器（時間戳記法，鎖屏都準確）
+// ═══════════════════════════════════════════
+let timerStartTimestamp=null;
+let timerAccumulated=0;
+let timerRunning=false;
+let timerInterval=null;
+
+function startTimer(){
+    timerStartTimestamp=Date.now();
+    timerAccumulated=0;
+    timerRunning=true;
+    clearInterval(timerInterval);
+    timerInterval=setInterval(updateTimerDisplay,1000);
+    const el=document.getElementById('gameTimer');
+    if(el){el.textContent='00:00:00';el.classList.add('running');}
+}
+
+function stopTimer(){
+    timerAccumulated=getElapsedSeconds();
+    timerRunning=false;
+    timerStartTimestamp=null;
+    clearInterval(timerInterval);
+    const el=document.getElementById('gameTimer');
+    if(el)el.classList.remove('running');
+}
+
+function getElapsedSeconds(){
+    if(!timerStartTimestamp)return timerAccumulated;
+    return timerAccumulated+Math.floor((Date.now()-timerStartTimestamp)/1000);
+}
+
+function updateTimerDisplay(){
+    const total=getElapsedSeconds();
+    const h=Math.floor(total/3600);
+    const m=Math.floor((total%3600)/60);
+    const s=total%60;
+    const el=document.getElementById('gameTimer');
+    if(el)el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function formatDuration(seconds){
+    const h=Math.floor(seconds/3600);
+    const m=Math.floor((seconds%3600)/60);
+    const s=seconds%60;
+    if(h>0)return `${h}小時 ${m}分 ${s}秒`;
+    if(m>0)return `${m}分 ${s}秒`;
+    return `${s}秒`;
+}
+
+// 返回前台立即更新
+document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'&&timerRunning)updateTimerDisplay();
+});
+
+// ═══════════════════════════════════════════
+// 初始化
+// ═══════════════════════════════════════════
+function init(){
+    loadProfiles();
+    renderPlayerSetup();
+    const saved=localStorage.getItem('mahjongGame');
+    if(saved){
+        if(confirm('發現未完成的牌局，是否繼續？')){
+            gameState=JSON.parse(saved);
+            // 恢復計時器
+            if(gameState.timerAccumulated!==undefined){
+                timerAccumulated=gameState.timerAccumulated;
+                timerStartTimestamp=Date.now();
+                timerRunning=true;
+                clearInterval(timerInterval);
+                timerInterval=setInterval(updateTimerDisplay,1000);
+                const el=document.getElementById('gameTimer');
+                if(el)el.classList.add('running');
             }
-        }
-    }
-
-    function toggleCollapsible(header) {
-        const content = header.nextElementSibling;
-        const arrow = header.querySelector('span:last-child');
-        content.classList.toggle('open');
-        arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
-    }
-
-    function startGame() {
-        gameState.settings.spicyLevel = document.querySelector('input[name="spicyLevel"]:checked').value;
-        gameState.settings.baseRate = parseInt(document.querySelector('input[name="baseRate"]:checked').value);
-        gameState.settings.minFan = parseInt(document.getElementById('minFan').value);
-        gameState.settings.maxFan = parseInt(document.getElementById('maxFan').value);
-        gameState.settings.drawContinue = document.getElementById('drawContinue').checked;
-        gameState.settings.baoPai = document.getElementById('baoPai').checked;
-        gameState.players = [];
-        for (let i = 0; i < 4; i++) {
-            const name = document.getElementById(`player${i}`).value || `玩家${i+1}`;
-            gameState.players.push({ name, score: 0, position: ['東','南','西','北'][i], wins: 0, selfDraws: 0, losses: 0, totalFan: 0, cheats: 0 });
-        }
-        gameState.currentDealer = 0;
-        gameState.roundNumber = 1;
-        gameState.consecutiveDealer = 0;
-        gameState.history = [];
-        initStats();
-        showPage('gamePage');
-        updateGameDisplay();
-        saveGame();
-    }
-
-    function initStats() {
-        gameState.stats = {
-            totalRounds: 0,
-            winKing: { player: '', count: 0 },
-            selfDrawKing: { player: '', count: 0 },
-            loserKing: { player: '', count: 0 },
-            highestFan: { player: '', fan: 0, fanTypes: '' },
-            cheatKing: { player: '', count: 0 }
-        };
-    }
-
-    function updateGameDisplay() {
-        const windNames = ['東','南','西','北'];
-        const windRound = Math.floor((gameState.roundNumber - 1) / 4);
-        const windPos = (gameState.roundNumber - 1) % 4;
-        document.getElementById('currentRound').textContent = `${windNames[Math.min(windRound,3)]}${['一','二','三','四'][windPos]}局`;
-        document.getElementById('roundCount').textContent = `第 ${gameState.roundNumber} 局`;
-        const playerGrid = document.getElementById('playerGrid');
-        playerGrid.innerHTML = '';
-        gameState.players.forEach((player, index) => {
-            const isDealer = index === gameState.currentDealer;
-            const scoreClass = player.score > 0 ? 'positive' : player.score < 0 ? 'negative' : '';
-            const card = document.createElement('div');
-            card.className = `player-card ${isDealer ? 'dealer' : ''}`;
-            card.innerHTML = `
-                <div class="player-position">${player.position}家</div>
-                <div class="player-name">${player.name}</div>
-                <div class="player-score ${scoreClass}">${player.score >= 0 ? '+' : ''}$${player.score}</div>
-            `;
-            playerGrid.appendChild(card);
-        });
-    }
-
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        const idx = ['gamePage','fanTablePage','statsPage','historyPage','setupPage'].indexOf(pageId);
-        if (idx !== -1) document.querySelectorAll('.nav-btn')[idx].classList.add('active');
-        if (pageId === 'statsPage') updateStats();
-        if (pageId === 'historyPage') updateHistory();
-    }
-
-    function showRecordWin() {
-        showPage('recordPage');
-
-        // 食糊者
-        const winnerSelect = document.getElementById('winnerSelect');
-        winnerSelect.innerHTML = '';
-        gameState.players.forEach((player, index) => {
-            const option = document.createElement('div');
-            option.className = 'radio-option';
-            option.innerHTML = `
-                <input type="radio" id="winner${index}" name="winner" value="${index}"
-                    ${index === 0 ? 'checked' : ''} onchange="updateLoserSelect(); updateCheatInfo();">
-                <label for="winner${index}">${player.name}<br><small>${player.position}家</small></label>
-            `;
-            winnerSelect.appendChild(option);
-        });
-
-        // 重置
-        document.getElementById('selfDraw').checked = true;
-        document.getElementById('loserSelectGroup').style.display = 'none';
-        document.getElementById('cheatInfo').style.display = 'none';
-        document.getElementById('fanSelectorWrapper').style.display = 'block';
-        document.getElementById('hasBaoPai').checked = false;
-        document.getElementById('baoPaiPersonSelect').style.display = 'none';
-        document.getElementById('baoPaiSelectGroup').style.display = gameState.settings.baoPai ? 'block' : 'none';
-
-        // 重置入番模式
-        document.getElementById('modeSelect').checked = true;
-        document.getElementById('fanSelectMode').style.display = 'block';
-        document.getElementById('fanDirectMode').style.display = 'none';
-        document.getElementById('directFanInput').value = gameState.settings.minFan;
-
-        updateLoserSelect();
-
-        // 生成分組番型
-        const container = document.getElementById('fanGroupContainer');
-        container.innerHTML = '';
-        const groups = {};
-        fanTypes.forEach((fan, index) => {
-            if (!groups[fan.value]) groups[fan.value] = [];
-            groups[fan.value].push({ ...fan, index });
-        });
-        Object.keys(groups).sort((a,b) => a-b).forEach(fanValue => {
-            const items = groups[fanValue];
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'fan-group';
-            const header = document.createElement('div');
-            header.className = 'fan-group-header';
-            header.innerHTML = `
-                <span>${fanValue}番番型</span>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <span class="group-badge">${items.length} 種</span>
-                    <span class="group-arrow">▶</span>
-                </div>
-            `;
-            header.addEventListener('click', () => {
-                const content = groupDiv.querySelector('.fan-group-content');
-                const arrow = header.querySelector('.group-arrow');
-                content.classList.toggle('open');
-                arrow.textContent = content.classList.contains('open') ? '▼' : '▶';
-            });
-            const content = document.createElement('div');
-            content.className = 'fan-group-content';
-            items.forEach(fan => {
-                const item = document.createElement('div');
-                item.className = 'fan-item';
-                item.innerHTML = `
-                    <input type="checkbox" id="fan${fan.index}" value="${fan.value}" onchange="updateTotalFan()">
-                    <label for="fan${fan.index}" class="fan-label">
-                        <span>${fan.name}</span>
-                        <span class="fan-value">${fan.value}番</span>
-                    </label>
-                `;
-                item.addEventListener('click', function(e) {
-                    if (e.target.tagName !== 'INPUT') {
-                        const cb = this.querySelector('input');
-                        cb.checked = !cb.checked;
-                        updateTotalFan();
-                    }
-                });
-                content.appendChild(item);
-            });
-            groupDiv.appendChild(header);
-            groupDiv.appendChild(content);
-            container.appendChild(groupDiv);
-        });
-
-        updateTotalFan();
-        updateCheatInfo();
-    }
-
-    function updateFanMode() {
-        const mode = document.querySelector('input[name="fanMode"]:checked').value;
-        document.getElementById('fanSelectMode').style.display = mode === 'select' ? 'block' : 'none';
-        document.getElementById('fanDirectMode').style.display = mode === 'direct' ? 'block' : 'none';
-        updateTotalFan();
-    }
-
-    function adjustDirectFan(delta) {
-        const input = document.getElementById('directFanInput');
-        input.value = Math.max(0, Math.min(99, (parseInt(input.value) || 0) + delta));
-        updateTotalFan();
-    }
-
-    function updateWinMethod() {
-        const method = document.querySelector('input[name="winMethod"]:checked').value;
-        const loserSelectGroup = document.getElementById('loserSelectGroup');
-        const baoPaiSelectGroup = document.getElementById('baoPaiSelectGroup');
-        const fanSelectorWrapper = document.getElementById('fanSelectorWrapper');
-        const cheatInfo = document.getElementById('cheatInfo');
-        if (method === 'cheat') {
-            loserSelectGroup.style.display = 'none';
-            baoPaiSelectGroup.style.display = 'none';
-            fanSelectorWrapper.style.display = 'none';
-            cheatInfo.style.display = 'block';
-            updateCheatInfo();
-        } else {
-            fanSelectorWrapper.style.display = 'block';
-            cheatInfo.style.display = 'none';
-            loserSelectGroup.style.display = method === 'other' ? 'block' : 'none';
-            baoPaiSelectGroup.style.display = gameState.settings.baoPai ? 'block' : 'none';
-            if (method === 'other') updateLoserSelect();
-        }
-    }
-
-    function updateLoserSelect() {
-        const loserSelect = document.getElementById('loserSelect');
-        loserSelect.innerHTML = '';
-        const winnerRadio = document.querySelector('input[name="winner"]:checked');
-        if (!winnerRadio) return;
-        const winnerIndex = parseInt(winnerRadio.value);
-        let firstAdded = true;
-        gameState.players.forEach((player, index) => {
-            if (index !== winnerIndex) {
-                const option = document.createElement('div');
-                option.className = 'radio-option';
-                option.innerHTML = `
-                    <input type="radio" id="loser${index}" name="loser" value="${index}" ${firstAdded ? 'checked' : ''}>
-                    <label for="loser${index}">${player.name}<br><small>${player.position}家</small></label>
-                `;
-                loserSelect.appendChild(option);
-                firstAdded = false;
-            }
-        });
-        updateBaoPaiSelect();
-    }
-
-    function updateBaoPai() {
-        const hasBaoPai = document.getElementById('hasBaoPai').checked;
-        document.getElementById('baoPaiPersonSelect').style.display = hasBaoPai ? 'block' : 'none';
-        if (hasBaoPai) updateBaoPaiSelect();
-    }
-
-    function updateBaoPaiSelect() {
-        const baoPaiPersonSelect = document.getElementById('baoPaiPersonSelect');
-        baoPaiPersonSelect.innerHTML = '';
-        const winnerRadio = document.querySelector('input[name="winner"]:checked');
-        if (!winnerRadio) return;
-        const winnerIndex = parseInt(winnerRadio.value);
-        let firstAdded = true;
-        gameState.players.forEach((player, index) => {
-            if (index !== winnerIndex) {
-                const option = document.createElement('div');
-                option.className = 'radio-option';
-                option.innerHTML = `
-                    <input type="radio" id="baoPaiPerson${index}" name="baoPaiPerson" value="${index}" ${firstAdded ? 'checked' : ''}>
-                    <label for="baoPaiPerson${index}">${player.name}<br><small>${player.position}家</small></label>
-                `;
-                baoPaiPersonSelect.appendChild(option);
-                firstAdded = false;
-            }
-        });
-    }
-
-    function updateCheatInfo() {
-        const winnerRadio = document.querySelector('input[name="winner"]:checked');
-        if (!winnerRadio) return;
-        const winnerIndex = parseInt(winnerRadio.value);
-        const cheatMoney = calculateMoney(gameState.settings.maxFan);
-        document.getElementById('cheatInfoText').innerHTML = `
-            <div style="color:#555; margin-bottom:10px;">
-                <strong>${gameState.players[winnerIndex].name}</strong> 詐糊，須賠其他三家<br>
-                每家：<strong>$${cheatMoney}</strong>（${gameState.settings.maxFan}番上限台價）
-            </div>
-            <div class="cheat-penalty">共賠：$${cheatMoney * 3}</div>
-        `;
-    }
-
-    function updateTotalFan() {
-        const mode = document.querySelector('input[name="fanMode"]:checked')?.value || 'select';
-        let totalFan = 0;
-        if (mode === 'direct') {
-            totalFan = parseInt(document.getElementById('directFanInput').value) || 0;
-        } else {
-            document.querySelectorAll('.fan-item').forEach(item => {
-                const cb = item.querySelector('input[type="checkbox"]');
-                if (cb.checked) { totalFan += parseInt(cb.value); item.classList.add('checked'); }
-                else { item.classList.remove('checked'); }
-            });
-        }
-        const actualFan = Math.min(totalFan, gameState.settings.maxFan);
-        const money = calculateMoney(actualFan);
-        document.getElementById('totalFanDisplay').textContent = `${totalFan} 番`;
-        document.getElementById('totalMoneyDisplay').textContent = `台價 $${money}`;
-        const capMessage = document.getElementById('capMessage');
-        if (totalFan > gameState.settings.maxFan) {
-            capMessage.textContent = `已爆棚！計 ${gameState.settings.maxFan} 番金額`;
-            capMessage.style.color = '#dc2626';
-        } else if (totalFan > 0 && totalFan < gameState.settings.minFan) {
-            capMessage.textContent = `未達起糊番數（需 ${gameState.settings.minFan} 番）`;
-            capMessage.style.color = '#dc2626';
-        } else {
-            capMessage.textContent = '';
-        }
-    }
-
-    function calculateMoney(fan) {
-        const base = gameState.settings.baseRate;
-        if (fan === 0) return base;
-        if (gameState.settings.spicyLevel === 'full') {
-            return base * Math.pow(2, fan);
-        } else {
-            if (fan <= 4) return base * Math.pow(2, fan);
-            if (fan % 2 === 0) return base * Math.pow(2, 4) * Math.pow(2, (fan - 4) / 2);
-            return Math.round(base * Math.pow(2, 4) * Math.pow(2, (fan - 5) / 2) * 1.5);
-        }
-    }
-
-    function confirmWin() {
-        const winnerIndex = parseInt(document.querySelector('input[name="winner"]:checked').value);
-        const method = document.querySelector('input[name="winMethod"]:checked').value;
-
-        // 詐糊
-        if (method === 'cheat') {
-            const cheatMoney = calculateMoney(gameState.settings.maxFan);
-            const scoreChanges = {};
-            gameState.players.forEach((p, i) => scoreChanges[i] = 0);
-            gameState.players.forEach((player, index) => {
-                if (index !== winnerIndex) { scoreChanges[index] = cheatMoney; scoreChanges[winnerIndex] -= cheatMoney; }
-            });
-            Object.keys(scoreChanges).forEach(i => { gameState.players[i].score += scoreChanges[i]; });
-            gameState.players[winnerIndex].cheats = (gameState.players[winnerIndex].cheats || 0) + 1;
-            gameState.history.push({
-                round: gameState.roundNumber,
-                roundName: document.getElementById('currentRound').textContent,
-                winner: winnerIndex, method: 'cheat', fans: ['詐糊'],
-                totalFan: 0, actualFan: 0, money: scoreChanges[winnerIndex],
-                scoreChanges, timestamp: new Date().toLocaleTimeString('zh-HK'),
-                baoPai: false, baoPaiPerson: -1
-            });
-            updateGameStats();
-            gameState.currentDealer = (gameState.currentDealer + 1) % 4;
-            gameState.consecutiveDealer = 0;
-            gameState.roundNumber++;
-            updateGameDisplay();
-            saveGame();
             showPage('gamePage');
-            return;
-        }
-
-        // 正常食糊
-        const fanMode = document.querySelector('input[name="fanMode"]:checked')?.value || 'select';
-        let totalFan = 0;
-        const selectedFans = [];
-        if (fanMode === 'direct') {
-            totalFan = parseInt(document.getElementById('directFanInput').value) || 0;
-            selectedFans.push(`自訂 ${totalFan}番`);
+            updateGameDisplay();
+            updateUndoBtn();
         } else {
-            document.querySelectorAll('.fan-item input[type="checkbox"]:checked').forEach(cb => {
-                totalFan += parseInt(cb.value);
-                selectedFans.push(cb.parentElement.querySelector('.fan-label span').textContent);
-            });
+            localStorage.removeItem('mahjongGame');
         }
-
-        if (totalFan < gameState.settings.minFan) {
-            alert(`未達起糊番數！需要至少 ${gameState.settings.minFan} 番。`);
-            return;
-        }
-
-        const actualFan = Math.min(totalFan, gameState.settings.maxFan);
-        const baseMoney = calculateMoney(actualFan);
-        const scoreChanges = {};
-        gameState.players.forEach((p, i) => scoreChanges[i] = 0);
-
-        const hasBaoPai = gameState.settings.baoPai && document.getElementById('hasBaoPai').checked;
-        let baoPaiPerson = -1, loserIndex = -1;
-
-        if (method === 'self') {
-            if (hasBaoPai) {
-                baoPaiPerson = parseInt(document.querySelector('input[name="baoPaiPerson"]:checked').value);
-                scoreChanges[baoPaiPerson] = -(baseMoney * 3);
-                scoreChanges[winnerIndex] = baseMoney * 3;
-            } else {
-                gameState.players.forEach((player, index) => {
-                    if (index !== winnerIndex) { scoreChanges[index] = -baseMoney; scoreChanges[winnerIndex] += baseMoney; }
-                });
-            }
-        } else {
-            loserIndex = parseInt(document.querySelector('input[name="loser"]:checked').value);
-            scoreChanges[loserIndex] = -baseMoney;
-            scoreChanges[winnerIndex] = baseMoney;
-            gameState.players[loserIndex].losses++;
-        }
-
-        Object.keys(scoreChanges).forEach(i => { gameState.players[i].score += scoreChanges[i]; });
-        gameState.players[winnerIndex].wins++;
-        if (method === 'self') gameState.players[winnerIndex].selfDraws++;
-        gameState.players[winnerIndex].totalFan += totalFan;
-
-        gameState.history.push({
-            round: gameState.roundNumber,
-            roundName: document.getElementById('currentRound').textContent,
-            winner: winnerIndex, loser: loserIndex, method,
-            fans: selectedFans, totalFan, actualFan, baseMoney,
-            money: scoreChanges[winnerIndex], scoreChanges,
-            timestamp: new Date().toLocaleTimeString('zh-HK'),
-            baoPai: hasBaoPai, baoPaiPerson, fanMode
-        });
-
-        updateGameStats();
-        if (actualFan >= 10) showCelebration(gameState.players[winnerIndex].name, selectedFans.join('、'), scoreChanges[winnerIndex]);
-        if (winnerIndex === gameState.currentDealer) { gameState.consecutiveDealer++; }
-        else { gameState.currentDealer = (gameState.currentDealer + 1) % 4; gameState.consecutiveDealer = 0; }
-        gameState.roundNumber++;
-        updateGameDisplay();
-        saveGame();
-        if (actualFan < 10) showPage('gamePage');
     }
+}
 
-    function cancelRecord() { showPage('gamePage'); }
+// ═══════════════════════════════════════════
+// 玩家 Profile
+// ═══════════════════════════════════════════
+function loadProfiles(){
+    const saved=localStorage.getItem('mahjongProfiles');
+    playerProfiles=saved?JSON.parse(saved):[
+        {name:'玩家1',emoji:'😀'},{name:'玩家2',emoji:'😎'},
+        {name:'玩家3',emoji:'🤩'},{name:'玩家4',emoji:'🥳'}
+    ];
+}
+function saveProfiles(){localStorage.setItem('mahjongProfiles',JSON.stringify(playerProfiles));}
 
-    function recordDraw() {
-        if (!confirm('確認流局？')) return;
-        gameState.history.push({
-            round: gameState.roundNumber,
-            roundName: document.getElementById('currentRound').textContent,
-            winner: -1, method: 'draw',
-            timestamp: new Date().toLocaleTimeString('zh-HK')
-        });
-        if (!gameState.settings.drawContinue) { gameState.currentDealer = (gameState.currentDealer + 1) % 4; gameState.consecutiveDealer = 0; }
-        gameState.roundNumber++;
-        updateGameDisplay();
-        saveGame();
-    }
+function renderPlayerSetup(){
+    const positions=['東家（起莊）','南家','西家','北家'];
+    const container=document.getElementById('playerSetupContainer');
+    container.innerHTML='';
+    playerProfiles.forEach((profile,i)=>{
+        const div=document.createElement('div');
+        div.className='player-setup-card';
+        div.innerHTML=`
+            <div class="player-setup-header">
+                <span class="selected-emoji-display" id="emojiDisplay${i}">${profile.emoji}</span>
+                <span>${positions[i]}</span>
+            </div>
+            <div class="form-group" style="margin-bottom:8px;">
+                <input type="text" id="player${i}" value="${profile.name}" placeholder="玩家名稱"
+                    oninput="playerProfiles[${i}].name=this.value;saveProfiles();">
+            </div>
+            <div class="emoji-grid" id="emojiGrid${i}"></div>
+        `;
+        container.appendChild(div);
+        renderEmojiGrid(i,profile.emoji);
+    });
+}
 
-    function updateGameStats() {
-        let maxWins=0, winKing='', maxSD=0, sdKing='', maxLoss=0, loserKing='', maxCheats=0, cheatKing='', highFan=0, highPlayer='', highFanTypes='';
-        gameState.players.forEach(p => {
-            if (p.wins > maxWins) { maxWins=p.wins; winKing=p.name; }
-            if (p.selfDraws > maxSD) { maxSD=p.selfDraws; sdKing=p.name; }
-            if (p.losses > maxLoss) { maxLoss=p.losses; loserKing=p.name; }
-            if ((p.cheats||0) > maxCheats) { maxCheats=p.cheats||0; cheatKing=p.name; }
-        });
-        gameState.history.forEach(h => {
-            if (h.winner !== -1 && h.method !== 'cheat' && h.totalFan > highFan) {
-                highFan=h.totalFan; highPlayer=gameState.players[h.winner].name; highFanTypes=h.fans.join('、');
-            }
-        });
-        gameState.stats = {
-            winKing: { player: winKing, count: maxWins },
-            selfDrawKing: { player: sdKing, count: maxSD },
-            loserKing: { player: loserKing, count: maxLoss },
-            highestFan: { player: highPlayer, fan: highFan, fanTypes: highFanTypes },
-            cheatKing: { player: cheatKing, count: maxCheats }
+function renderEmojiGrid(playerIndex,selectedEmoji){
+    const grid=document.getElementById(`emojiGrid${playerIndex}`);
+    grid.innerHTML='';
+    EMOJI_OPTIONS.forEach(emoji=>{
+        const btn=document.createElement('button');
+        btn.className=`emoji-btn ${emoji===selectedEmoji?'selected':''}`;
+        btn.textContent=emoji;
+        btn.onclick=()=>{
+            playerProfiles[playerIndex].emoji=emoji;
+            saveProfiles();
+            document.getElementById(`emojiDisplay${playerIndex}`).textContent=emoji;
+            grid.querySelectorAll('.emoji-btn').forEach(b=>b.classList.remove('selected'));
+            btn.classList.add('selected');
         };
-    }
+        grid.appendChild(btn);
+    });
+}
 
-    function updateStats() {
-        const s = gameState.stats;
-        document.getElementById('winKing').textContent = s.winKing.player ? `${s.winKing.player} (${s.winKing.count}次)` : '-';
-        document.getElementById('selfDrawKing').textContent = s.selfDrawKing.player ? `${s.selfDrawKing.player} (${s.selfDrawKing.count}次)` : '-';
-        document.getElementById('loserKing').textContent = s.loserKing.player ? `${s.loserKing.player} (${s.loserKing.count}次)` : '-';
-        document.getElementById('highestFan').textContent = s.highestFan.player ? `${s.highestFan.player} (${s.highestFan.fan}番)` : '-';
-        document.getElementById('cheatKing').textContent = s.cheatKing?.player ? `${s.cheatKing.player} (${s.cheatKing.count}次)` : '-';
-        const tbody = document.getElementById('statsTableBody');
-        tbody.innerHTML = '';
-        gameState.players.forEach(player => {
-            const avgFan = player.wins > 0 ? (player.totalFan / player.wins).toFixed(1) : '0.0';
-            const sc = player.score > 0 ? 'positive' : player.score < 0 ? 'negative' : '';
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${player.name}</td>
-                <td class="table-center ${sc}"><strong>${player.score>=0?'+':''}$${player.score}</strong></td>
-                <td class="table-center">${player.wins}</td>
-                <td class="table-center">${player.selfDraws}</td>
-                <td class="table-center">${player.losses}</td>
-                <td class="table-center" style="color:${(player.cheats||0)>0?'#dc2626':'#555'}">${player.cheats||0}</td>
-                <td class="table-center">${avgFan}</td>
-            `;
-            tbody.appendChild(row);
+// ═══════════════════════════════════════════
+// 開始遊戲
+// ═══════════════════════════════════════════
+function startGame(){
+    gameState.settings.spicyLevel=document.querySelector('input[name="spicyLevel"]:checked').value;
+    gameState.settings.baseRate=parseInt(document.querySelector('input[name="baseRate"]:checked').value);
+    gameState.settings.minFan=parseInt(document.getElementById('minFan').value);
+    gameState.settings.maxFan=parseInt(document.getElementById('maxFan').value);
+    gameState.settings.drawContinue=document.getElementById('drawContinue').checked;
+    gameState.settings.baoPai=document.getElementById('baoPai').checked;
+    for(let i=0;i<4;i++)playerProfiles[i].name=document.getElementById(`player${i}`).value||`玩家${i+1}`;
+    saveProfiles();
+    gameState.players=playerProfiles.map((p,i)=>({
+        name:p.name,emoji:p.emoji,score:0,position:['東','南','西','北'][i],
+        wins:0,selfDraws:0,losses:0,totalFan:0,cheats:0
+    }));
+    gameState.currentDealer=0;gameState.roundNumber=1;gameState.consecutiveDealer=0;
+    gameState.history=[];gameState.maxConsecutive=0;gameState.maxConsecutivePlayer='';
+    gameState.startTime=new Date().toLocaleDateString('zh-HK');
+    initStats();
+    startTimer();
+    showPage('gamePage');
+    updateGameDisplay();
+    updateUndoBtn();
+    saveGame();
+}
+
+function initStats(){
+    gameState.stats={
+        winKing:{player:'',count:0},selfDrawKing:{player:'',count:0},
+        loserKing:{player:'',count:0},highestFan:{player:'',fan:0},cheatKing:{player:'',count:0}
+    };
+}
+
+// ═══════════════════════════════════════════
+// 遊戲顯示
+// ═══════════════════════════════════════════
+function updateGameDisplay(){
+    const windNames=['東','南','西','北'];
+    const wr=Math.floor((gameState.roundNumber-1)/4);
+    const wp=(gameState.roundNumber-1)%4;
+    document.getElementById('currentRound').textContent=`${windNames[Math.min(wr,3)]}${['一','二','三','四'][wp]}局`;
+    document.getElementById('roundCount').textContent=`第 ${gameState.roundNumber} 局`;
+    const remaining=16-((gameState.roundNumber-1)%16);
+    document.getElementById('remainingRounds').textContent=`距完成一圈還有 ${remaining} 局`;
+    const cel=document.getElementById('consecutiveInfo');
+    if(gameState.consecutiveDealer>0){
+        const p=gameState.players[gameState.currentDealer];
+        cel.textContent=`🔥 ${p.emoji||''} ${p.name} ${gameState.consecutiveDealer}連莊！`;
+        cel.style.display='block';
+    } else cel.style.display='none';
+    const grid=document.getElementById('playerGrid');
+    grid.innerHTML='';
+    gameState.players.forEach((player,index)=>{
+        const isDealer=index===gameState.currentDealer;
+        const sc=player.score>0?'positive':player.score<0?'negative':'';
+        const card=document.createElement('div');
+        card.className=`player-card ${isDealer?'dealer':''}`;
+        card.innerHTML=`
+            <div class="player-emoji">${player.emoji||'😀'}</div>
+            <div class="player-position">${player.position}家</div>
+            <div class="player-name">${player.name}</div>
+            <div class="player-score ${sc}">${player.score>=0?'+':''}$${player.score}</div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function showPage(pageId){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    const idx=['gamePage','fanTablePage','statsPage','historyPage','savedGamesPage','setupPage'].indexOf(pageId);
+    if(idx!==-1)document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+    if(pageId==='statsPage')updateStats();
+    if(pageId==='historyPage')updateHistory();
+    if(pageId==='savedGamesPage')renderSavedGames();
+    if(pageId==='setupPage')renderPlayerSetup();
+}
+
+function toggleCollapsible(header){
+    const content=header.nextElementSibling;
+    const arrow=header.querySelector('span:last-child');
+    content.classList.toggle('open');
+    arrow.textContent=content.classList.contains('open')?'▲':'▼';
+}
+
+function saveGame(){
+    const toSave={...gameState,timerAccumulated:getElapsedSeconds()};
+    localStorage.setItem('mahjongGame',JSON.stringify(toSave));
+}
+
+// ═══════════════════════════════════════════
+// 記錄食糊
+// ═══════════════════════════════════════════
+function showRecordWin(){
+    showPage('recordPage');
+    const ws=document.getElementById('winnerSelect');
+    ws.innerHTML='';
+    gameState.players.forEach((player,index)=>{
+        const o=document.createElement('div');
+        o.className='radio-option';
+        o.innerHTML=`
+            <input type="radio" id="winner${index}" name="winner" value="${index}"
+                ${index===0?'checked':''} onchange="updateLoserSelect();updateCheatInfo();">
+            <label for="winner${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>
+        `;
+        ws.appendChild(o);
+    });
+    document.getElementById('selfDraw').checked=true;
+    document.getElementById('loserSelectGroup').style.display='none';
+    document.getElementById('cheatInfo').style.display='none';
+    document.getElementById('fanSelectorWrapper').style.display='block';
+    document.getElementById('hasBaoPai').checked=false;
+    document.getElementById('baoPaiPersonSelect').style.display='none';
+    document.getElementById('baoPaiSelectGroup').style.display=gameState.settings.baoPai?'block':'none';
+    document.getElementById('modeSelect').checked=true;
+    document.getElementById('fanSelectMode').style.display='block';
+    document.getElementById('fanDirectMode').style.display='none';
+    document.getElementById('directFanInput').value=gameState.settings.minFan;
+    updateLoserSelect();buildFanGroups();updateTotalFan();updateCheatInfo();
+}
+
+function buildFanGroups(){
+    const container=document.getElementById('fanGroupContainer');
+    container.innerHTML='';
+    const groups={};
+    fanTypes.forEach((fan,index)=>{
+        if(!groups[fan.value])groups[fan.value]=[];
+        groups[fan.value].push({...fan,index});
+    });
+    Object.keys(groups).sort((a,b)=>a-b).forEach(fanValue=>{
+        const items=groups[fanValue];
+        const groupDiv=document.createElement('div');
+        groupDiv.className='fan-group';
+        const header=document.createElement('div');
+        header.className='fan-group-header';
+        header.innerHTML=`<span>${fanValue}番番型</span><div style="display:flex;align-items:center;gap:9px;"><span class="group-badge">${items.length}種</span><span class="group-arrow">▶</span></div>`;
+        header.addEventListener('click',()=>{
+            const content=groupDiv.querySelector('.fan-group-content');
+            const arrow=header.querySelector('.group-arrow');
+            content.classList.toggle('open');
+            arrow.textContent=content.classList.contains('open')?'▼':'▶';
         });
-    }
-
-    function updateHistory() {
-        const historyList = document.getElementById('historyList');
-        if (gameState.history.length === 0) {
-            historyList.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">暫無記錄</p>';
-            return;
-        }
-        historyList.innerHTML = '';
-        gameState.history.slice().reverse().forEach(record => {
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            if (record.winner === -1) {
-                item.innerHTML = `
-                    <div class="history-header"><span>第${record.round}局（${record.roundName}）</span><span>${record.timestamp}</span></div>
-                    <div class="history-details"><strong>流局</strong> - 無人食糊</div>
-                `;
-            } else if (record.method === 'cheat') {
-                item.classList.add('cheat-record');
-                const cheater = gameState.players[record.winner];
-                const cheatMoney = calculateMoney(gameState.settings.maxFan);
-                let moneyDetails = '<div class="history-money">';
-                Object.keys(record.scoreChanges).forEach(i => {
-                    const change = record.scoreChanges[i];
-                    if (change !== 0) {
-                        const p = gameState.players[i];
-                        moneyDetails += `<div style="color:${change>0?'#059669':'#dc2626'};">${p.name}: ${change>0?'+':''}$${change}</div>`;
-                    }
-                });
-                moneyDetails += '</div>';
-                item.innerHTML = `
-                    <div class="history-header"><span>第${record.round}局（${record.roundName}）</span><span>${record.timestamp}</span></div>
-                    <div class="history-details">
-                        <div><strong style="color:#dc2626;">❌ ${cheater.name} 詐糊！</strong></div>
-                        <div>罰款：每家 $${cheatMoney}（${gameState.settings.maxFan}番上限），共賠 <strong>$${-record.money}</strong></div>
-                    </div>${moneyDetails}
-                `;
-            } else {
-                const winner = gameState.players[record.winner];
-                const methodText = record.method === 'self' ? '自摸' : '出銃';
-                const fanIcon = record.actualFan >= 10 ? ' 🌟' : '';
-                const spicyLabel = gameState.settings.spicyLevel === 'full' ? '🔥🔥辣辣上' : '🌶️半辣上';
-                let moneyDetails = '<div class="history-money">';
-                Object.keys(record.scoreChanges).forEach(i => {
-                    const change = record.scoreChanges[i];
-                    if (change !== 0) {
-                        const p = gameState.players[i];
-                        moneyDetails += `<div style="color:${change>0?'#059669':'#dc2626'};">${p.name}: ${change>0?'+':''}$${change}</div>`;
-                    }
-                });
-                moneyDetails += '</div>';
-                let baoPaiText = '';
-                if (record.baoPai && record.baoPaiPerson !== -1) baoPaiText = `<div style="color:#f59e0b;margin-top:5px;">⚠️ ${gameState.players[record.baoPaiPerson].name} 包牌</div>`;
-                const fanLine = record.totalFan !== record.actualFan
-                    ? `${record.totalFan}番 <span style="color:#dc2626;font-weight:bold;">⚠️ 爆棚！上限${record.actualFan}番</span> = $${record.money}（如無上限 $${calculateMoney(record.totalFan)}）`
-                    : `${record.totalFan}番 = $${record.money}`;
-                item.innerHTML = `
-                    <div class="history-header"><span>第${record.round}局（${record.roundName}）${fanIcon}</span><span>${record.timestamp}</span></div>
-                    <div class="history-details">
-                        <div><strong>🎯 ${winner.name}</strong> 食糊（${methodText}）</div>
-                        <div>📝 ${record.fans.join('、')}</div>
-                        <div>💰 ${fanLine} | ${spicyLabel}</div>
-                        ${baoPaiText}
-                    </div>${moneyDetails}
-                `;
-            }
-            historyList.appendChild(item);
-        });
-    }
-
-    function showCelebration(playerName, fanType, money) {
-        document.getElementById('celebrationFanType').textContent = `${playerName} - ${fanType}`;
-        document.getElementById('celebrationMoney').textContent = `+$${money}`;
-        document.getElementById('celebration').classList.add('active');
-        setTimeout(() => document.getElementById('celebration').classList.remove('active'), 5000);
-    }
-
-    function closeCelebration() {
-        document.getElementById('celebration').classList.remove('active');
-        showPage('gamePage');
-    }
-
-    function endGame() {
-        if (!confirm('確認結束牌局並查看找數方案？')) return;
-        showSettlement();
-    }
-
-    function showSettlement() {
-        const content = document.getElementById('settlementContent');
-        let summary = '<h3 style="color:var(--mahjong-green);margin-bottom:15px;">最終戰績</h3><table class="table" style="margin-bottom:30px;"><thead><tr><th>玩家</th><th class="table-center">金額</th></tr></thead><tbody>';
-        gameState.players.forEach(p => {
-            const sc = p.score > 0 ? 'positive' : p.score < 0 ? 'negative' : '';
-            summary += `<tr><td>${p.name}</td><td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td></tr>`;
-        });
-        summary += '</tbody></table>';
-        const settlements = calculateSettlement();
-        let settlementHTML = '<h3 style="color:var(--mahjong-green);margin-bottom:15px;">💸 找數方案</h3>';
-        if (settlements.length === 0) {
-            settlementHTML += '<p style="text-align:center;color:#999;">大家打和，無需找數 🎉</p>';
-        } else {
-            settlementHTML += `<p style="margin-bottom:15px;color:#666;">最簡方案（${settlements.length}次交易）</p>`;
-            settlements.forEach((s, index) => {
-                settlementHTML += `<div class="settlement-item" id="settle${index}"><span>${index+1}. ${s.from} 俾 <strong>$${s.amount}</strong> 俾 ${s.to}</span><input type="checkbox" style="width:24px;height:24px;" onchange="toggleSettled(${index})"></div>`;
+        const content=document.createElement('div');
+        content.className='fan-group-content';
+        items.forEach(fan=>{
+            const item=document.createElement('div');
+            item.className='fan-item';
+            item.innerHTML=`
+                <input type="checkbox" id="fan${fan.index}" value="${fan.value}" onchange="updateTotalFan()">
+                <label for="fan${fan.index}" class="fan-label">
+                    <span>${fan.name}</span><span class="fan-value">${fan.value}番</span>
+                </label>`;
+            item.addEventListener('click',function(e){
+                if(e.target.tagName!=='INPUT'){
+                    const cb=this.querySelector('input');cb.checked=!cb.checked;updateTotalFan();
+                }
             });
-        }
-        content.innerHTML = summary + settlementHTML;
-        document.getElementById('settlementModal').classList.add('active');
-        saveGame();
-        localStorage.removeItem('mahjongGame');
-    }
-
-    function toggleSettled(idx) { document.getElementById(`settle${idx}`).classList.toggle('completed'); }
-
-    function calculateSettlement() {
-        const positive = [], negative = [];
-        gameState.players.forEach(p => {
-            if (p.score > 0) positive.push({ name: p.name, amount: p.score });
-            else if (p.score < 0) negative.push({ name: p.name, amount: -p.score });
+            content.appendChild(item);
         });
-        positive.sort((a,b) => b.amount-a.amount);
-        negative.sort((a,b) => b.amount-a.amount);
-        const settlements = [];
-        let i=0, j=0;
-        while (i < positive.length && j < negative.length) {
-            const pay = Math.min(positive[i].amount, negative[j].amount);
-            settlements.push({ from: negative[j].name, to: positive[i].name, amount: pay });
-            positive[i].amount -= pay; negative[j].amount -= pay;
-            if (positive[i].amount === 0) i++;
-            if (negative[j].amount === 0) j++;
-        }
-        return settlements;
-    }
+        groupDiv.appendChild(header);groupDiv.appendChild(content);container.appendChild(groupDiv);
+    });
+}
 
-    function closeSettlement() { document.getElementById('settlementModal').classList.remove('active'); }
-    function saveGame() { localStorage.setItem('mahjongGame', JSON.stringify(gameState)); }
-    window.onload = init;
+function updateFanMode(){
+    const mode=document.querySelector('input[name="fanMode"]:checked').value;
+    document.getElementById('fanSelectMode').style.display=mode==='select'?'block':'none';
+    document.getElementById('fanDirectMode').style.display=mode==='direct'?'block':'none';
+    updateTotalFan();
+}
+
+function adjustDirectFan(delta){
+    const input=document.getElementById('directFanInput');
+    input.value=Math.max(0,Math.min(99,(parseInt(input.value)||0)+delta));
+    updateTotalFan();
+}
+
+function updateWinMethod(){
+    const method=document.querySelector('input[name="winMethod"]:checked').value;
+    if(method==='cheat'){
+        document.getElementById('loserSelectGroup').style.display='none';
+        document.getElementById('baoPaiSelectGroup').style.display='none';
+        document.getElementById('fanSelectorWrapper').style.display='none';
+        document.getElementById('cheatInfo').style.display='block';
+        updateCheatInfo();
+    } else {
+        document.getElementById('fanSelectorWrapper').style.display='block';
+        document.getElementById('cheatInfo').style.display='none';
+        document.getElementById('loserSelectGroup').style.display=method==='other'?'block':'none';
+        document.getElementById('baoPaiSelectGroup').style.display=gameState.settings.baoPai?'block':'none';
+        if(method==='other')updateLoserSelect();
+    }
+}
+
+function updateLoserSelect(){
+    const ls=document.getElementById('loserSelect');
+    ls.innerHTML='';
+    const wr=document.querySelector('input[name="winner"]:checked');
+    if(!wr)return;
+    const wi=parseInt(wr.value);
+    let first=true;
+    gameState.players.forEach((player,index)=>{
+        if(index!==wi){
+            const o=document.createElement('div');
+            o.className='radio-option';
+            o.innerHTML=`
+                <input type="radio" id="loser${index}" name="loser" value="${index}" ${first?'checked':''}>
+                <label for="loser${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>`;
+            ls.appendChild(o);first=false;
+        }
+    });
+    updateBaoPaiSelect();
+}
+
+function updateBaoPai(){
+    const has=document.getElementById('hasBaoPai').checked;
+    document.getElementById('baoPaiPersonSelect').style.display=has?'block':'none';
+    if(has)updateBaoPaiSelect();
+}
+
+function updateBaoPaiSelect(){
+    const container=document.getElementById('baoPaiPersonSelect');
+    container.innerHTML='';
+    const wr=document.querySelector('input[name="winner"]:checked');
+    if(!wr)return;
+    const wi=parseInt(wr.value);
+    let first=true;
+    gameState.players.forEach((player,index)=>{
+        if(index!==wi){
+            const o=document.createElement('div');
+            o.className='radio-option';
+            o.innerHTML=`
+                <input type="radio" id="baoPaiPerson${index}" name="baoPaiPerson" value="${index}" ${first?'checked':''}>
+                <label for="baoPaiPerson${index}">${player.emoji||''} ${player.name}<br><small>${player.position}家</small></label>`;
+            container.appendChild(o);first=false;
+        }
+    });
+}
+
+function updateCheatInfo(){
+    const wr=document.querySelector('input[name="winner"]:checked');
+    if(!wr)return;
+    const p=gameState.players[parseInt(wr.value)];
+    const m=calculateMoney(gameState.settings.maxFan);
+    document.getElementById('cheatInfoText').innerHTML=`
+        <div style="color:#555;margin-bottom:9px;">
+            <strong>${p.emoji||''} ${p.name}</strong> 詐糊，須賠其他三家<br>
+            每家：<strong>$${m}</strong>（${gameState.settings.maxFan}番上限）
+        </div>
+        <div class="cheat-penalty">共賠：$${m*3}</div>`;
+}
+
+function updateTotalFan(){
+    const mode=document.querySelector('input[name="fanMode"]:checked')?.value||'select';
+    let totalFan=0;
+    if(mode==='direct'){
+        totalFan=parseInt(document.getElementById('directFanInput').value)||0;
+    } else {
+        document.querySelectorAll('.fan-item').forEach(item=>{
+            const cb=item.querySelector('input[type="checkbox"]');
+            if(cb.checked){totalFan+=parseInt(cb.value);item.classList.add('checked');}
+            else item.classList.remove('checked');
+        });
+    }
+    const actual=Math.min(totalFan,gameState.settings.maxFan);
+    document.getElementById('totalFanDisplay').textContent=`${totalFan} 番`;
+    document.getElementById('totalMoneyDisplay').textContent=`台價 $${calculateMoney(actual)}`;
+    const cap=document.getElementById('capMessage');
+    if(totalFan>gameState.settings.maxFan){cap.textContent=`已爆棚！計 ${gameState.settings.maxFan} 番`;cap.style.color='#dc2626';}
+    else if(totalFan>0&&totalFan<gameState.settings.minFan){cap.textContent=`未達起糊番數（需 ${gameState.settings.minFan} 番）`;cap.style.color='#dc2626';}
+    else cap.textContent='';
+}
+
+function calculateMoney(fan){
+    const base=gameState.settings.baseRate;
+    if(fan===0)return base;
+    if(gameState.settings.spicyLevel==='full')return base*Math.pow(2,fan);
+    if(fan<=4)return base*Math.pow(2,fan);
+    if(fan%2===0)return base*Math.pow(2,4)*Math.pow(2,(fan-4)/2);
+    return Math.round(base*Math.pow(2,4)*Math.pow(2,(fan-5)/2)*1.5);
+}
+
+// ═══════════════════════════════════════════
+// 確認食糊
+// ═══════════════════════════════════════════
+function confirmWin(){
+    const wi=parseInt(document.querySelector('input[name="winner"]:checked').value);
+    const method=document.querySelector('input[name="winMethod"]:checked').value;
+    if(method==='cheat'){
+        const cm=calculateMoney(gameState.settings.maxFan);
+        const sc={};gameState.players.forEach((p,i)=>sc[i]=0);
+        gameState.players.forEach((p,i)=>{if(i!==wi){sc[i]=cm;sc[wi]-=cm;}});
+        Object.keys(sc).forEach(i=>{gameState.players[i].score+=sc[i];});
+        gameState.players[wi].cheats=(gameState.players[wi].cheats||0)+1;
+        gameState.history.push({
+            round:gameState.roundNumber,roundName:document.getElementById('currentRound').textContent,
+            winner:wi,method:'cheat',fans:['詐糊'],totalFan:0,actualFan:0,
+            money:sc[wi],scoreChanges:sc,timestamp:new Date().toLocaleTimeString('zh-HK')
+        });
+        updateGameStats();
+        gameState.currentDealer=(gameState.currentDealer+1)%4;gameState.consecutiveDealer=0;
+        gameState.roundNumber++;updateGameDisplay();updateUndoBtn();saveGame();showPage('gamePage');return;
+    }
+    const fanMode=document.querySelector('input[name="fanMode"]:checked')?.value||'select';
+    let totalFan=0;const selectedFans=[];
+    if(fanMode==='direct'){
+        totalFan=parseInt(document.getElementById('directFanInput').value)||0;
+        selectedFans.push(`自訂 ${totalFan}番`);
+    } else {
+        document.querySelectorAll('.fan-item input[type="checkbox"]:checked').forEach(cb=>{
+            totalFan+=parseInt(cb.value);
+            selectedFans.push(cb.parentElement.querySelector('.fan-label span').textContent);
+        });
+    }
+    if(totalFan<gameState.settings.minFan){alert(`未達起糊番數！需要至少 ${gameState.settings.minFan} 番。`);return;}
+    const actualFan=Math.min(totalFan,gameState.settings.maxFan);
+    const baseMoney=calculateMoney(actualFan);
+    const sc={};gameState.players.forEach((p,i)=>sc[i]=0);
+    const hasBaoPai=gameState.settings.baoPai&&document.getElementById('hasBaoPai').checked;
+    let baoPaiPerson=-1,loserIndex=-1;
+    if(method==='self'){
+        if(hasBaoPai){
+            baoPaiPerson=parseInt(document.querySelector('input[name="baoPaiPerson"]:checked').value);
+            sc[baoPaiPerson]=-(baseMoney*3);sc[wi]=baseMoney*3;
+        } else {
+            gameState.players.forEach((p,i)=>{if(i!==wi){sc[i]=-baseMoney;sc[wi]+=baseMoney;}});
+        }
+    } else {
+        loserIndex=parseInt(document.querySelector('input[name="loser"]:checked').value);
+        sc[loserIndex]=-baseMoney;sc[wi]=baseMoney;gameState.players[loserIndex].losses++;
+    }
+    Object.keys(sc).forEach(i=>{gameState.players[i].score+=sc[i];});
+    gameState.players[wi].wins++;
+    if(method==='self')gameState.players[wi].selfDraws++;
+    gameState.players[wi].totalFan+=totalFan;
+    gameState.history.push({
+        round:gameState.roundNumber,roundName:document.getElementById('currentRound').textContent,
+        winner:wi,loser:loserIndex,method,fans:selectedFans,totalFan,actualFan,baseMoney,
+        money:sc[wi],scoreChanges:sc,timestamp:new Date().toLocaleTimeString('zh-HK'),
+        baoPai:hasBaoPai,baoPaiPerson,fanMode
+    });
+    updateGameStats();
+    if(actualFan>=10)showCelebration(gameState.players[wi].name,selectedFans.join('、'),sc[wi]);
+    if(wi===gameState.currentDealer){gameState.consecutiveDealer++;}
+    else{gameState.currentDealer=(gameState.currentDealer+1)%4;gameState.consecutiveDealer=0;}
+    gameState.roundNumber++;updateGameDisplay();updateUndoBtn();saveGame();
+    if(actualFan<10)showPage('gamePage');
+}
+
+function cancelRecord(){showPage('gamePage');}
+
+function recordDraw(){
+    if(!confirm('確認流局？'))return;
+    gameState.history.push({
+        round:gameState.roundNumber,roundName:document.getElementById('currentRound').textContent,
+        winner:-1,method:'draw',timestamp:new Date().toLocaleTimeString('zh-HK')
+    });
+    if(!gameState.settings.drawContinue){gameState.currentDealer=(gameState.currentDealer+1)%4;gameState.consecutiveDealer=0;}
+    gameState.roundNumber++;updateGameDisplay();updateUndoBtn();saveGame();
+}
+
+// ═══════════════════════════════════════════
+// 悔棋
+// ═══════════════════════════════════════════
+function undoLastRecord(){
+    if(gameState.history.length===0)return;
+    if(!confirm('確認撤銷上一局記錄？'))return;
+    const last=gameState.history[gameState.history.length-1];
+    if(last.scoreChanges)Object.keys(last.scoreChanges).forEach(i=>{gameState.players[i].score-=last.scoreChanges[i];});
+    if(last.method==='cheat'){
+        gameState.players[last.winner].cheats=Math.max(0,(gameState.players[last.winner].cheats||0)-1);
+    } else if(last.winner!==-1){
+        gameState.players[last.winner].wins=Math.max(0,gameState.players[last.winner].wins-1);
+        if(last.method==='self')gameState.players[last.winner].selfDraws=Math.max(0,gameState.players[last.winner].selfDraws-1);
+        if(last.loser!==-1)gameState.players[last.loser].losses=Math.max(0,gameState.players[last.loser].losses-1);
+        gameState.players[last.winner].totalFan=Math.max(0,gameState.players[last.winner].totalFan-(last.totalFan||0));
+    }
+    gameState.history.pop();
+    gameState.roundNumber=Math.max(1,gameState.roundNumber-1);
+    recalcDealerFromHistory();updateGameStats();updateGameDisplay();updateUndoBtn();saveGame();
+}
+
+function recalcDealerFromHistory(){
+    let dealer=0,consec=0;
+    gameState.history.forEach(h=>{
+        if(h.method==='draw'){if(!gameState.settings.drawContinue){dealer=(dealer+1)%4;consec=0;}}
+        else if(h.method==='cheat'){dealer=(dealer+1)%4;consec=0;}
+        else if(h.winner!==-1){if(h.winner===dealer){consec++;}else{dealer=(dealer+1)%4;consec=0;}}
+    });
+    gameState.currentDealer=dealer;gameState.consecutiveDealer=consec;
+}
+
+function updateUndoBtn(){
+    document.getElementById('undoBtn').style.display=gameState.history.length>0?'inline-flex':'none';
+}
+
+// ═══════════════════════════════════════════
+// 統計
+// ═══════════════════════════════════════════
+function updateGameStats(){
+    let mW=0,wK='',mS=0,sK='',mL=0,lK='',mC=0,cK='',hF=0,hP='';
+    gameState.players.forEach(p=>{
+        if(p.wins>mW){mW=p.wins;wK=p.name;}
+        if(p.selfDraws>mS){mS=p.selfDraws;sK=p.name;}
+        if(p.losses>mL){mL=p.losses;lK=p.name;}
+        if((p.cheats||0)>mC){mC=p.cheats||0;cK=p.name;}
+    });
+    gameState.history.forEach(h=>{
+        if(h.winner!==-1&&h.method!=='cheat'&&h.totalFan>hF){hF=h.totalFan;hP=gameState.players[h.winner].name;}
+    });
+    let td=0,tc=0;
+    gameState.history.forEach(h=>{
+        if(h.method==='draw'){if(!gameState.settings.drawContinue){td=(td+1)%4;tc=0;}}
+        else if(h.method==='cheat'){td=(td+1)%4;tc=0;}
+        else if(h.winner!==-1){
+            if(h.winner===td){tc++;if(tc>(gameState.maxConsecutive||0)){gameState.maxConsecutive=tc;gameState.maxConsecutivePlayer=gameState.players[td].name;}}
+            else{td=(td+1)%4;tc=0;}
+        }
+    });
+    gameState.stats={
+        winKing:{player:wK,count:mW},selfDrawKing:{player:sK,count:mS},
+        loserKing:{player:lK,count:mL},highestFan:{player:hP,fan:hF},cheatKing:{player:cK,count:mC}
+    };
+}
+
+function updateStats(){
+    const s=gameState.stats;
+    document.getElementById('winKing').textContent=s.winKing?.player?`${s.winKing.player} (${s.winKing.count}次)`:'-';
+    document.getElementById('selfDrawKing').textContent=s.selfDrawKing?.player?`${s.selfDrawKing.player} (${s.selfDrawKing.count}次)`:'-';
+    document.getElementById('loserKing').textContent=s.loserKing?.player?`${s.loserKing.player} (${s.loserKing.count}次)`:'-';
+    document.getElementById('highestFan').textContent=s.highestFan?.player?`${s.highestFan.player} (${s.highestFan.fan}番)`:'-';
+    document.getElementById('cheatKing').textContent=s.cheatKing?.player?`${s.cheatKing.player} (${s.cheatKing.count}次)`:'-';
+    document.getElementById('maxConsecutiveStat').textContent=gameState.maxConsecutive>0?`${gameState.maxConsecutivePlayer} (${gameState.maxConsecutive}連)`:'-';
+    const tbody=document.getElementById('statsTableBody');
+    tbody.innerHTML='';
+    gameState.players.forEach(p=>{
+        const avg=p.wins>0?(p.totalFan/p.wins).toFixed(1):'0.0';
+        const sc=p.score>0?'positive':p.score<0?'negative':'';
+        const row=document.createElement('tr');
+        row.innerHTML=`
+            <td>${p.emoji||''} ${p.name}</td>
+            <td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td>
+            <td class="table-center">${p.wins}</td>
+            <td class="table-center">${p.selfDraws}</td>
+            <td class="table-center">${p.losses}</td>
+            <td class="table-center" style="color:${(p.cheats||0)>0?'#dc2626':'#555'}">${p.cheats||0}</td>
+            <td class="table-center">${avg}</td>`;
+        tbody.appendChild(row);
+    });
+    const fanCount={};
+    gameState.history.forEach(h=>{
+        if(h.winner!==-1&&h.method!=='cheat'&&h.fans){
+            h.fans.forEach(f=>{if(!f.startsWith('自訂'))fanCount[f]=(fanCount[f]||0)+1;});
+        }
+    });
+    const ranking=Object.entries(fanCount).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const medals=['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣'];
+    document.getElementById('fanStatsBody').innerHTML=ranking.length===0
+        ?'<tr><td colspan="2" style="text-align:center;color:#999;">暫無數據</td></tr>'
+        :ranking.map(([name,count],i)=>`<tr><td>${medals[i]} ${name}</td><td class="table-center"><strong>${count}</strong> 次</td></tr>`).join('');
+}
+
+// ═══════════════════════════════════════════
+// 本局記錄
+// ═══════════════════════════════════════════
+function updateHistory(){
+    const list=document.getElementById('historyList');
+    if(gameState.history.length===0){list.innerHTML='<p style="text-align:center;color:#999;padding:40px;">暫無記錄</p>';return;}
+    list.innerHTML='';
+    gameState.history.slice().reverse().forEach(record=>{
+        const item=document.createElement('div');
+        item.className='history-item';
+        if(record.winner===-1){
+            item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）</span><span>${record.timestamp}</span></div><div class="history-details"><strong>流局</strong></div>`;
+        } else if(record.method==='cheat'){
+            item.classList.add('cheat-record');
+            const cheater=gameState.players[record.winner];
+            const cm=calculateMoney(gameState.settings.maxFan);
+            let md='<div class="history-money">';
+            Object.keys(record.scoreChanges).forEach(i=>{
+                const ch=record.scoreChanges[i];
+                if(ch!==0){const p=gameState.players[i];md+=`<div style="color:${ch>0?'#059669':'#dc2626'};">${p.emoji||''} ${p.name}: ${ch>0?'+':''}$${ch}</div>`;}
+            });
+            md+='</div>';
+            item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）</span><span>${record.timestamp}</span></div><div class="history-details"><strong style="color:#dc2626;">❌ ${cheater.emoji||''} ${cheater.name} 詐糊！</strong><div>罰款：每家 $${cm}，共賠 <strong>$${-record.money}</strong></div></div>${md}`;
+        } else {
+            const winner=gameState.players[record.winner];
+            const mt=record.method==='self'?'自摸':'出銃';
+            const fi=record.actualFan>=10?' 🌟':'';
+            let md='<div class="history-money">';
+            Object.keys(record.scoreChanges).forEach(i=>{
+                const ch=record.scoreChanges[i];
+                if(ch!==0){const p=gameState.players[i];md+=`<div style="color:${ch>0?'#059669':'#dc2626'};">${p.emoji||''} ${p.name}: ${ch>0?'+':''}$${ch}</div>`;}
+            });
+            md+='</div>';
+            let bp='';
+            if(record.baoPai&&record.baoPaiPerson!==-1)bp=`<div style="color:#f59e0b;margin-top:4px;">⚠️ ${gameState.players[record.baoPaiPerson].emoji||''} ${gameState.players[record.baoPaiPerson].name} 包牌</div>`;
+            const fl=record.totalFan!==record.actualFan
+                ?`${record.totalFan}番 <span style="color:#dc2626;">⚠️ 爆棚！上限${record.actualFan}番</span> = $${record.money}`
+                :`${record.totalFan}番 = $${record.money}`;
+            item.innerHTML=`<div class="history-header"><span>第${record.round}局（${record.roundName}）${fi}</span><span>${record.timestamp}</span></div><div class="history-details"><div><strong>🎯 ${winner.emoji||''} ${winner.name}</strong>（${mt}）</div><div>📝 ${record.fans.join('、')}</div><div>💰 ${fl}</div>${bp}</div>${md}`;
+        }
+        list.appendChild(item);
+    });
+}
+
+// ═══════════════════════════════════════════
+// 慶祝 & 結算
+// ═══════════════════════════════════════════
+function showCelebration(playerName,fanType,money){
+    document.getElementById('celebrationFanType').textContent=`${playerName} - ${fanType}`;
+    document.getElementById('celebrationMoney').textContent=`+$${money}`;
+    document.getElementById('celebration').classList.add('active');
+    setTimeout(()=>document.getElementById('celebration').classList.remove('active'),5000);
+}
+function closeCelebration(){document.getElementById('celebration').classList.remove('active');showPage('gamePage');}
+
+function endGame(){
+    if(!confirm('確認結束牌局並查看找數方案？'))return;
+    stopTimer();
+    saveCompletedGame();
+    showSettlement();
+    localStorage.removeItem('mahjongGame');
+}
+
+function showSettlement(){
+    const elapsed=timerAccumulated;
+    const content=document.getElementById('settlementContent');
+    let html='';
+    if(elapsed>0){
+        html+=`<div class="duration-badge">⏱️ 本局歷時：<strong>${formatDuration(elapsed)}</strong></div><br>`;
+    }
+    html+='<h3 style="color:var(--mahjong-green);margin-bottom:11px;">最終戰績</h3>';
+    html+='<table class="table" style="margin-bottom:18px;"><thead><tr><th>玩家</th><th class="table-center">金額</th></tr></thead><tbody>';
+    gameState.players.forEach(p=>{
+        const sc=p.score>0?'positive':p.score<0?'negative':'';
+        html+=`<tr><td>${p.emoji||''} ${p.name}</td><td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td></tr>`;
+    });
+    html+='</tbody></table>';
+    const settles=calcSettlement(gameState.players.map(p=>({name:(p.emoji||'')+' '+p.name,score:p.score})));
+    html+='<h3 style="color:var(--mahjong-green);margin-bottom:11px;">💸 找數方案</h3>';
+    if(settles.length===0){html+='<p style="text-align:center;color:#999;">大家打和，無需找數 🎉</p>';}
+    else{settles.forEach((s,i)=>{html+=`<div class="settlement-item" id="settle${i}"><span>${i+1}. ${s.from} 俾 <strong>$${s.amount}</strong> 俾 ${s.to}</span><input type="checkbox" style="width:22px;height:22px;" onchange="toggleSettled(${i})"></div>`;});}
+    content.innerHTML=html;
+    document.getElementById('settlementModal').classList.add('active');
+}
+
+function calcSettlement(players){
+    const pos=[],neg=[];
+    players.forEach(p=>{if(p.score>0)pos.push({name:p.name,amount:p.score});else if(p.score<0)neg.push({name:p.name,amount:-p.score});});
+    pos.sort((a,b)=>b.amount-a.amount);neg.sort((a,b)=>b.amount-a.amount);
+    const res=[];let i=0,j=0;
+    while(i<pos.length&&j<neg.length){
+        const pay=Math.min(pos[i].amount,neg[j].amount);
+        res.push({from:neg[j].name,to:pos[i].name,amount:pay});
+        pos[i].amount-=pay;neg[j].amount-=pay;
+        if(pos[i].amount===0)i++;if(neg[j].amount===0)j++;
+    }
+    return res;
+}
+function toggleSettled(idx){document.getElementById(`settle${idx}`).classList.toggle('completed');}
+function closeSettlement(){document.getElementById('settlementModal').classList.remove('active');}
+
+// ═══════════════════════════════════════════
+// 歷史牌局儲存
+// ═══════════════════════════════════════════
+function saveCompletedGame(){
+    const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
+    games.unshift({
+        date:gameState.startTime||new Date().toLocaleDateString('zh-HK'),
+        endTime:new Date().toLocaleTimeString('zh-HK'),
+        totalRounds:gameState.roundNumber-1,
+        settings:{...gameState.settings},
+        players:gameState.players.map(p=>({name:p.name,emoji:p.emoji,score:p.score,wins:p.wins,selfDraws:p.selfDraws,losses:p.losses,cheats:p.cheats||0})),
+        history:gameState.history,
+        maxConsecutive:gameState.maxConsecutive,
+        maxConsecutivePlayer:gameState.maxConsecutivePlayer,
+        duration:timerAccumulated,
+        durationText:timerAccumulated>0?formatDuration(timerAccumulated):null
+    });
+    if(games.length>MAX_SAVED_GAMES)games.splice(MAX_SAVED_GAMES);
+    localStorage.setItem('mahjongHistory',JSON.stringify(games));
+}
+
+// ═══════════════════════════════════════════
+// 渲染歷史牌局列表
+// ═══════════════════════════════════════════
+function renderSavedGames(){
+    const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
+    const container=document.getElementById('savedGamesList');
+    if(games.length===0){container.innerHTML='<p style="text-align:center;color:#999;padding:40px;">暫無歷史記錄<br><small>完成牌局後自動儲存</small></p>';return;}
+    container.innerHTML='';
+    games.forEach((game,index)=>{
+        const sorted=[...game.players].sort((a,b)=>b.score-a.score);
+        const winner=sorted[0];
+        const spicyLabel=game.settings.spicyLevel==='full'?'🔥🔥辣辣上':'🌶️半辣上';
+        const baseLabel=['','二五雞','五一','','一二蚊'][game.settings.baseRate]||'';
+        const card=document.createElement('div');
+        card.className='saved-game-card';
+        card.innerHTML=`
+            <div class="saved-game-header">
+                <div>
+                    <span style="font-size:0.95rem;">📅 ${game.date} ${game.endTime||''}</span>
+                </div>
+                <button class="delete-game-btn" onclick="deleteSavedGame(${index},event)">🗑️</button>
+            </div>
+            <div style="font-size:0.85rem;color:#666;margin-bottom:6px;">
+                ${spicyLabel} · ${baseLabel} · ${game.totalRounds}局
+                ${game.durationText?` · ⏱️ ${game.durationText}`:''}
+            </div>
+            <div style="font-size:0.88rem;color:#888;margin-bottom:6px;">
+                🏆 ${winner.emoji||''} ${winner.name} 勝出（${winner.score>=0?'+':''}$${winner.score}）
+                ${game.maxConsecutive>0?` · 👑 最長連莊 ${game.maxConsecutive} 次`:''}
+            </div>
+            <div class="saved-game-players">
+                ${game.players.map(p=>{
+                    const sc=p.score>0?'#059669':p.score<0?'#dc2626':'#555';
+                    return `<div class="saved-game-player"><span>${p.emoji||''} ${p.name}</span><strong style="color:${sc};">${p.score>=0?'+':''}$${p.score}</strong></div>`;
+                }).join('')}
+            </div>`;
+        card.addEventListener('click',()=>openSavedGame(index));
+        container.appendChild(card);
+    });
+}
+
+function deleteSavedGame(index,event){
+    event.stopPropagation();
+    if(!confirm('確認刪除此牌局記錄？'))return;
+    const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
+    games.splice(index,1);
+    localStorage.setItem('mahjongHistory',JSON.stringify(games));
+    renderSavedGames();
+}
+
+// ═══════════════════════════════════════════
+// 歷史牌局詳情 + 折線圖
+// ═══════════════════════════════════════════
+function openSavedGame(index){
+    const games=JSON.parse(localStorage.getItem('mahjongHistory')||'[]');
+    const game=games[index];
+    document.getElementById('savedGameModalTitle').textContent=`📅 ${game.date} 牌局詳情`;
+    const spicyLabel=game.settings.spicyLevel==='full'?'🔥🔥辣辣上':'🌶️半辣上';
+    const baseLabel=['','二五雞($1)','五一($2)','','一二蚊($4)'][game.settings.baseRate]||'';
+    let html='';
+    // 遊戲時間
+    if(game.duration&&game.duration>0){
+        html+=`<div class="duration-badge" style="margin-bottom:14px;">⏱️ 遊戲時間：<strong>${game.durationText}</strong></div><br>`;
+    }
+    // 設定
+    html+=`<div style="background:rgba(42,157,143,0.08);padding:11px 14px;border-radius:8px;margin-bottom:14px;font-size:0.88rem;color:#555;">
+        ${spicyLabel} · ${baseLabel} · 起糊${game.settings.minFan}番 · 爆棚${game.settings.maxFan}番 · 共${game.totalRounds}局
+        ${game.maxConsecutive>0?` · 👑 最長連莊 ${game.maxConsecutive} 次（${game.maxConsecutivePlayer}）`:''}
+    </div>`;
+    // 戰績表
+    const sorted=[...game.players].sort((a,b)=>b.score-a.score);
+    html+='<h4 style="color:var(--mahjong-green);margin-bottom:9px;">🏆 最終戰績</h4>';
+    html+='<table class="table" style="margin-bottom:16px;"><thead><tr><th>排名</th><th>玩家</th><th class="table-center">金額</th><th class="table-center">食糊</th><th class="table-center">自摸</th><th class="table-center">出銃</th></tr></thead><tbody>';
+    const medals=['🥇','🥈','🥉','4️⃣'];
+    sorted.forEach((p,i)=>{
+        const sc=p.score>0?'positive':p.score<0?'negative':'';
+        html+=`<tr><td>${medals[i]}</td><td>${p.emoji||''} ${p.name}</td><td class="table-center ${sc}"><strong>${p.score>=0?'+':''}$${p.score}</strong></td><td class="table-center">${p.wins}</td><td class="table-center">${p.selfDraws}</td><td class="table-center">${p.losses}</td></tr>`;
+    });
+    html+='</tbody></table>';
+    // 折線圖
+    html+=`<h4 style="color:var(--mahjong-green);margin-bottom:9px;">📈 金額走勢</h4>
+    <div class="chart-container">
+        <div class="chart-legend" id="chartLegend_${index}"></div>
+        <canvas id="scoreChart_${index}" height="220"></canvas>
+    </div>`;
+    document.getElementById('savedGameModalContent').innerHTML=html;
+    document.getElementById('savedGameModal').classList.add('active');
+    setTimeout(()=>drawScoreChart(game,index),100);
+}
+
+function drawScoreChart(game,index){
+    const canvas=document.getElementById(`scoreChart_${index}`);
+    if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const dpr=window.devicePixelRatio||1;
+    const W=canvas.parentElement.clientWidth-30;
+    const H=220;
+    canvas.width=W*dpr; canvas.height=H*dpr;
+    canvas.style.width=W+'px'; canvas.style.height=H+'px';
+    ctx.scale(dpr,dpr);
+    // 計算各局累計分數
+    const scores=game.players.map(()=>[0]);
+    const cumulative=game.players.map(()=>0);
+    game.history.forEach(h=>{
+        if(h.scoreChanges){
+            game.players.forEach((_,i)=>{
+                cumulative[i]+=(h.scoreChanges[i]||0);
+                scores[i].push(cumulative[i]);
+            });
+        } else {
+            game.players.forEach((_,i)=>scores[i].push(cumulative[i]));
+        }
+    });
+    const allVals=scores.flat();
+    const minVal=Math.min(...allVals);
+    const maxVal=Math.max(...allVals);
+    const range=Math.max(maxVal-minVal,1);
+    const PAD={top:20,right:15,bottom:35,left:50};
+    const CW=W-PAD.left-PAD.right;
+    const CH=H-PAD.top-PAD.bottom;
+    const xStep=scores[0].length>1?CW/(scores[0].length-1):CW;
+    function toX(i){return PAD.left+(scores[0].length>1?i*xStep:CW/2);}
+    function toY(v){return PAD.top+CH-(((v-minVal)/range)*CH);}
+    // 背景
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+    // 格線
+    ctx.strokeStyle='#e5e7eb';ctx.lineWidth=1;
+    const gridLines=5;
+    for(let g=0;g<=gridLines;g++){
+        const y=PAD.top+(g/gridLines)*CH;
+        ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(W-PAD.right,y);ctx.stroke();
+        const val=maxVal-((maxVal-minVal)*g/gridLines);
+        ctx.fillStyle='#9ca3af';ctx.font=`${11*dpr/dpr}px sans-serif`;ctx.textAlign='right';
+        ctx.fillText(`$${Math.round(val)}`,PAD.left-5,y+4);
+    }
+    // 零線
+    if(minVal<0&&maxVal>0){
+        const zy=toY(0);
+        ctx.strokeStyle='rgba(0,0,0,0.2)';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+        ctx.beginPath();ctx.moveTo(PAD.left,zy);ctx.lineTo(W-PAD.right,zy);ctx.stroke();
+        ctx.setLineDash([]);
+    }
+    // X軸標籤
+    ctx.fillStyle='#9ca3af';ctx.font='10px sans-serif';ctx.textAlign='center';
+    const step=Math.max(1,Math.floor(scores[0].length/8));
+    scores[0].forEach((_,i)=>{
+        if(i%step===0||i===scores[0].length-1){
+            ctx.fillText(i,toX(i),H-PAD.bottom+15);
+        }
+    });
+    ctx.fillStyle='#555';ctx.font='11px sans-serif';
+    ctx.fillText('局數',W/2,H-2);
+    // 折線
+    game.players.forEach((p,pi)=>{
+        const color=CHART_COLORS[pi];
+        ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.lineJoin='round';
+        ctx.beginPath();
+        scores[pi].forEach((v,i)=>{
+            if(i===0)ctx.moveTo(toX(i),toY(v));
+            else ctx.lineTo(toX(i),toY(v));
+        });
+        ctx.stroke();
+        // 圓點（最後一個）
+        const last=scores[pi].length-1;
+        ctx.fillStyle=color;
+        ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),5,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#fff';
+        ctx.beginPath();ctx.arc(toX(last),toY(scores[pi][last]),2.5,0,Math.PI*2);ctx.fill();
+    });
+    // 圖例
+    const legend=document.getElementById(`chartLegend_${index}`);
+    if(legend){
+        legend.innerHTML=game.players.map((p,i)=>`
+            <div class="legend-item">
+                <div class="legend-dot" style="background:${CHART_COLORS[i]};"></div>
+                <span>${p.emoji||''} ${p.name}（${p.score>=0?'+':''}$${p.score}）</span>
+            </div>`).join('');
+    }
+}
+
+function closeSavedGameModal(){document.getElementById('savedGameModal').classList.remove('active');}
+
+// ═══════════════════════════════════════════
+// 啟動
+// ═══════════════════════════════════════════
+window.onload=init;
 </script>
 </body>
 </html>
